@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "726808398107",
+    "project_id": "arduino-diagnostics",
+    "storage_bucket": "arduino-diagnostics.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:726808398107:android:227f7251f9ff9b8b80ebbe",
+        "android_client_info": {
+          "package_name": "com.droiduino.droiduinorccontrol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "726808398107-sfmmbdfrb8ecgje64tbd1jj32t4li8nq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBv9fLTEEOrd66X7iCb6ZQ8GvWVAWgsHHM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "726808398107-sfmmbdfrb8ecgje64tbd1jj32t4li8nq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

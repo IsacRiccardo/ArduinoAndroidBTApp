@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="199ac923-4bc9-4d15-8b38-660976afae68" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/codeStyles/Project.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/gradle.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/proguard-rules.pro" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/androidTest/java/com/droiduino/bluetoothconn/ExampleInstrumentedTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/AndroidManifest.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/ic_launcher-playstore.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/java/com/droiduino/bluetoothconn/DeviceInfoModel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/java/com/droiduino/bluetoothconn/DeviceListAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/java/com/droiduino/bluetoothconn/MainActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/java/com/droiduino/bluetoothconn/SelectDeviceActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-anydpi/ic_bulb.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-anydpi/ic_bulb_light.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-hdpi/ic_bulb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-hdpi/ic_bulb_light.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-mdpi/ic_bulb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-mdpi/ic_bulb_light.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-xhdpi/ic_bulb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-xhdpi/ic_bulb_light.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-xxhdpi/ic_bulb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable-xxhdpi/ic_bulb_light.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/font/averia_libre.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/layout/activity_main.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/layout/activity_select_device.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/layout/device_info_layout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/values/colors.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/values/font_certs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/values/preloaded_fonts.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/values/strings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/main/res/values/styles.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/app/src/test/java/com/droiduino/bluetoothconn/ExampleUnitTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/gradle.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AndroidApp/settings.gradle" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2MH5gTZGGv97OMuUtappwNy9c3i" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cidr.known.project.marker": "true",
+    "last_opened_file_path": "C:/Repos/ArduinoAndroidBTApp/DroiduinoRCControl",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="199ac923-4bc9-4d15-8b38-660976afae68" name="Changes" comment="" />
+      <created>1677411780883</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1677411780883</updated>
+    </task>
+    <servers />
+  </component>
+</project>
