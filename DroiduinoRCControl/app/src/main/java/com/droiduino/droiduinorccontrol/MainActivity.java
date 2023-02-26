@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnPID,btnDTCNumber,btnGetDTC,testDB,btnClearDTC;
 
     private TextView text;
+    private TextView Dtext;
 
     private String deviceName = null;
     private String deviceAddress;
@@ -71,12 +72,17 @@ public class MainActivity extends AppCompatActivity {
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
         btnGetDTC = findViewById(R.id.buttonGetDTC);
         testDB = findViewById(R.id.TestDatabase);
-        //btnRight = findViewById(R.id.imageButtonRight);
+        Dtext = findViewById(R.id.DescriptionText);
+        btnClearDTC = findViewById(R.id.buttonClearDTC);
+
         testDB.setEnabled(true);
+        //Disable buttons until BT connection is established
         btnPID.setEnabled(false);
         btnDTCNumber.setEnabled(false);
         btnGetDTC.setEnabled(false);
-        //btnRight.setEnabled(false);
+        Dtext.setEnabled(false);
+        btnClearDTC.setEnabled(false);
+
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = getIntent().getStringExtra("deviceName");
@@ -102,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         Second most important piece of Code
          */
         handler = new Handler(Looper.getMainLooper()) {
+            @SuppressLint("ResourceAsColor")
             @Override
             public void handleMessage(@NonNull Message msg){
                 switch (msg.what){
@@ -114,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                                 btnPID.setEnabled(true);
                                 btnDTCNumber.setEnabled(true);
                                 btnGetDTC.setEnabled(true);
-                                //btnRight.setEnabled(true);
+                                btnClearDTC.setEnabled(true);
                                 break;
                             case -1:
                                 toolbar.setSubtitle("Device fails to connect");
@@ -132,26 +139,28 @@ public class MainActivity extends AppCompatActivity {
 
                         // Read message from Arduino
                         String arduinoMsg = msg.obj.toString();
-                        if(arduinoMsg.contains("Positive Response"))
-                        {
+                        //Log.e("Arduino Message",arduinoMsg);
+                        if(arduinoMsg.contains("Positive Response")) {
                             text.append("Positive Response\n");
-                        }else{
-                            text.append("Negative Response\n");
-                        }
 
-                        //String that contains only DTC codes one after another
-                        DTCCodes  = arduinoMsg.substring(17);
-                        Log.d("DTCCODES",DTCCodes);
-                        //modify to handle multiple dtc codes in one message
-                        if(true)
-                        {
-                            String code = DTCCodes.substring(0,5);
-                            Log.e("Error",code);
-                            ReadData(code);
-                            DTCCodes = DTCCodes.replace(code,"");
-                            Log.d("DTCCODES",DTCCodes);
-                        }
-                        Log.e("Arduino Message",arduinoMsg);
+                            //String that contains only DTC codes one after another
+                            DTCCodes = arduinoMsg.substring("Positive Response".length());
+                            //Log.d("DTCCODES", DTCCodes);
+
+                            //Until theres enough characters to represent a DTC code process it
+                            while (DTCCodes.length() > 5) {
+                                String code = DTCCodes.substring(0, 5);
+                                //Log.e("Error", code);
+
+                                //Searching for the description of the DTC in the database
+                                ReadData(code);
+
+                                DTCCodes = DTCCodes.replace(code, "");
+                                //Log.d("DTCCODES", DTCCodes);
+                            }
+                        }else
+                            text.append("Negative Response");
+
                         break;
                 }
             }
@@ -204,10 +213,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Button for getting the DTC codes
+        btnClearDTC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO implement warning message for clearing DTC's
+                //Sending the command
+                String cmdText = "4";
+                connectedThread.write(cmdText);
+            }
+        });
+
 
     }
     /**
      * Function to read from the database
+     * Firebase has been use as service
      */
     @SuppressLint("SetTextI18n")
     public void ReadData(final String DTCID){

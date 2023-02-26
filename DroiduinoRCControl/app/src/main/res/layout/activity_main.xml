@@ -47,8 +47,8 @@
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/chipGroup"
-        android:layout_width="333dp"
-        android:layout_height="235dp"
+        android:layout_width="330dp"
+        android:layout_height="297dp"
         android:layout_marginStart="39dp"
         android:layout_marginTop="72dp"
         android:layout_marginEnd="39dp"
@@ -60,19 +60,30 @@
             android:id="@+id/buttonPID"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="GET SUPPORTED PID'S" />
+            android:text="GET SUPPORTED PID'S"
+            app:backgroundTint="@color/colorPrimary" />
 
         <Button
             android:id="@+id/buttonDtcNumber"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="GET DTC NUMBER" />
+            android:text="GET DTC NUMBER"
+            app:backgroundTint="@color/colorPrimary" />
 
         <Button
             android:id="@+id/buttonGetDTC"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="GET DTC CODES" />
+            android:text="GET DTC CODES"
+            app:backgroundTint="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/buttonClearDTC"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="CLEAR DTC'S"
+            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTintMode="screen" />
 
         <Button
             android:id="@+id/TestDatabase"
@@ -85,21 +96,19 @@
         android:id="@+id/textView"
         android:layout_width="333dp"
         android:layout_height="197dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="123dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginTop="100dp"
         android:text="The error description will appear here..."
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/chipGroup"
+        app:layout_constraintVertical_bias="0.187" />
 
     <EditText
         android:id="@+id/DescriptionText"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginTop="74dp"
+        android:layout_marginTop="65dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Errors Description"
