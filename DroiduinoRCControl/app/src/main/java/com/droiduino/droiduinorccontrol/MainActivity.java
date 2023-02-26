@@ -1,7 +1,6 @@
 package com.droiduino.droiduinorccontrol;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -13,24 +12,30 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
-
-import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnPID,btnDTCNumber,btnGetDTC,btnClearDTC;
+    private Button btnPID,btnDTCNumber,btnGetDTC,testDB,btnClearDTC;
 
     private String deviceName = null;
     private String deviceAddress;
@@ -38,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     public static BluetoothSocket mmSocket;
     public static ConnectedThread connectedThread;
     public static CreateConnectThread createConnectThread;
+
+    public static final String[] ReturnValue = {null};
+
+    public FirebaseFirestore db;
 
     private final static int CONNECTING_STATUS = 1; // used in bluetooth handler to identify message status
     private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
@@ -57,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
         btnPID = findViewById(R.id.buttonPID);
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
         btnGetDTC = findViewById(R.id.buttonGetDTC);
+        testDB = findViewById(R.id.TestDatabase);
         //btnRight = findViewById(R.id.imageButtonRight);
+        testDB.setEnabled(true);
         btnPID.setEnabled(false);
         btnDTCNumber.setEnabled(false);
         btnGetDTC.setEnabled(false);
@@ -88,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
          */
         handler = new Handler(Looper.getMainLooper()) {
             @Override
-            public void handleMessage(Message msg){
+            public void handleMessage(@NonNull Message msg){
                 switch (msg.what){
                     case CONNECTING_STATUS:
                         switch(msg.arg1){
@@ -110,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case MESSAGE_READ:
+                        String arduinoMsg = msg.obj.toString(); // Read message from Arduino
+                        Log.e("Arduino Message",arduinoMsg);
                         break;
                 }
             }
@@ -128,7 +141,9 @@ public class MainActivity extends AppCompatActivity {
         btnPID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //Sending the command
+                String cmdText = "1";
+                connectedThread.write(cmdText);
             }
         });
 
@@ -136,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
         btnDTCNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                //Sending the command
+                String cmdText = "2";
+                connectedThread.write(cmdText);
             }
         });
 
@@ -144,11 +161,52 @@ public class MainActivity extends AppCompatActivity {
         btnGetDTC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Sending the command
+                String cmdText = "3";
+                connectedThread.write(cmdText);
+            }
+        });
 
+        testDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ReadData("P0309");
             }
         });
 
 
+    }
+    /**
+     * Function to read from the database
+     */
+    public String ReadData(final String DTCID){
+
+        db= FirebaseFirestore.getInstance();
+
+        db.collection("CODES")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                if(document.getData().containsValue(DTCID)) {
+                                    ReturnValue[0] = (String) document.getData().get("DESCRIPTION");
+                                    Log.d("yes",ReturnValue[0]);
+                                }
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Error","Can't connect to collection");
+                    }
+                });
+
+        return "yes";
     }
 
     /* ============================ Thread to Create Connection =================================== */
@@ -219,8 +277,6 @@ public class MainActivity extends AppCompatActivity {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
-        private  boolean createString = false;
-        private String readMessage;
 
 
         public ConnectedThread(BluetoothSocket socket) {
@@ -233,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException ignored) { }
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
@@ -245,28 +301,19 @@ public class MainActivity extends AppCompatActivity {
             // Keep listening to the InputStream until an exception occurs
             while (true) {
                 try {
-                    // Read from the InputStream
+                    /*
+                    Read from the InputStream from Arduino until termination character is reached.
+                    Then send the whole String message to GUI Handler.
+                     */
                     buffer[bytes] = (byte) mmInStream.read();
-                    String readByte = new String(buffer, StandardCharsets.UTF_8).substring(0,1);
-
-                    //
-                    switch (readByte){
-                        case "<":
-                            createString = true;
-                            readMessage = "";
-                            break;
-                        case ">":
-                            createString = false;
-                            break;
-                    }
-
-                    //
-                    if (createString){
-                        readMessage = readMessage + readByte;
+                    String readMessage;
+                    if (buffer[bytes] == '\n'){
+                        readMessage = new String(buffer,0,bytes);
+                        Log.e("Arduino Message",readMessage);
+                        handler.obtainMessage(MESSAGE_READ,readMessage).sendToTarget();
+                        bytes = 0;
                     } else {
-//                        Log.e("UID Length", readMessage.length() + " characters");
-//                        String readUID = readMessage.substring(1).trim();
-//                        handler.obtainMessage(MESSAGE_READ,readUID).sendToTarget();
+                        bytes++;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -296,9 +343,13 @@ public class MainActivity extends AppCompatActivity {
     /* ============================ Terminate Connection at BackPress ====================== */
     @Override
     public void onBackPressed() {
+        // Terminate Bluetooth Connection and close app
         if (createConnectThread != null){
             createConnectThread.cancel();
         }
-        finish();
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }

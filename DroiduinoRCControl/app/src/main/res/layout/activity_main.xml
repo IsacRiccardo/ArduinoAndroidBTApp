@@ -73,6 +73,12 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="GET DTC CODES" />
+
+        <Button
+            android:id="@+id/TestDatabase"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Test Database" />
     </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
