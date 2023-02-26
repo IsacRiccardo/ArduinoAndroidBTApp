@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
@@ -36,6 +37,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnPID,btnDTCNumber,btnGetDTC,testDB,btnClearDTC;
+
+    private TextView text;
 
     private String deviceName = null;
     private String deviceAddress;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
+        text = findViewById(R.id.textView);
         btnPID = findViewById(R.id.buttonPID);
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
         btnGetDTC = findViewById(R.id.buttonGetDTC);
@@ -121,7 +125,32 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case MESSAGE_READ:
-                        String arduinoMsg = msg.obj.toString(); // Read message from Arduino
+                        //clearing the textview
+                        text.setText("");
+
+                        String DTCCodes = null;
+
+                        // Read message from Arduino
+                        String arduinoMsg = msg.obj.toString();
+                        if(arduinoMsg.contains("Positive Response"))
+                        {
+                            text.append("Positive Response\n");
+                        }else{
+                            text.append("Negative Response\n");
+                        }
+
+                        //String that contains only DTC codes one after another
+                        DTCCodes  = arduinoMsg.substring(17);
+                        Log.d("DTCCODES",DTCCodes);
+                        //modify to handle multiple dtc codes in one message
+                        if(true)
+                        {
+                            String code = DTCCodes.substring(0,5);
+                            Log.e("Error",code);
+                            ReadData(code);
+                            DTCCodes = DTCCodes.replace(code,"");
+                            Log.d("DTCCODES",DTCCodes);
+                        }
                         Log.e("Arduino Message",arduinoMsg);
                         break;
                 }
@@ -167,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Button for testing the DB
         testDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,24 +209,37 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Function to read from the database
      */
-    public String ReadData(final String DTCID){
+    @SuppressLint("SetTextI18n")
+    public void ReadData(final String DTCID){
 
         db= FirebaseFirestore.getInstance();
+        //text.setText("The error description will appear here...");
 
         db.collection("CODES")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
+                                //Get the data that corresponds to the DTCID from DB
                                 if(document.getData().containsValue(DTCID)) {
+                                    //Store it a one element array and print it in the configured textview
                                     ReturnValue[0] = (String) document.getData().get("DESCRIPTION");
+                                    //log for debug
                                     Log.d("yes",ReturnValue[0]);
+                                    if(text.getText().equals("The error description will appear here..."))
+                                        text.setText(ReturnValue[0]);
+                                    else{
+                                        text.append("\n");
+                                        text.append(ReturnValue[0]);
+                                    }
                                 }
                             }
                         } else {
-                            Log.w(TAG, "Error getting documents.", task.getException());
+                            Log.w(TAG, "Error getting Description.", task.getException());
+                            text.setText("Error getting Description.");
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -205,8 +248,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("Error","Can't connect to collection");
                     }
                 });
-
-        return "yes";
     }
 
     /* ============================ Thread to Create Connection =================================== */
