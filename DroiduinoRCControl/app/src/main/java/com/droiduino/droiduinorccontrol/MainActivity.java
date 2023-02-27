@@ -48,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     public static ConnectedThread connectedThread;
     public static CreateConnectThread createConnectThread;
 
+    //Variable that will determine how the response will be processed
+    public static int CMD = 0;
+
     public static final String[] ReturnValue = {null};
 
     public FirebaseFirestore db;
@@ -135,32 +138,70 @@ public class MainActivity extends AppCompatActivity {
                         //clearing the textview
                         text.setText("");
 
-                        String DTCCodes = null;
-
                         // Read message from Arduino
                         String arduinoMsg = msg.obj.toString();
-                        //Log.e("Arduino Message",arduinoMsg);
-                        if(arduinoMsg.contains("Positive Response")) {
+
+                        if(arduinoMsg.contains("Positive Response"))
+                        {
                             text.append("Positive Response\n");
 
-                            //String that contains only DTC codes one after another
-                            DTCCodes = arduinoMsg.substring("Positive Response".length());
-                            //Log.d("DTCCODES", DTCCodes);
+                            switch(CMD)
+                            {
+                                case 0: Log.e("Error", "Case 0 in command switch"); break;
+                                case 1:
+                                    //Supported PID response process
+                                    //Extract the data from the response
+                                    String RespDataPID = arduinoMsg.substring("Positive Response".length());
+                                    //TODO implement PID processing
 
-                            //Until theres enough characters to represent a DTC code process it
-                            while (DTCCodes.length() > 5) {
-                                String code = DTCCodes.substring(0, 5);
-                                //Log.e("Error", code);
+                                    break;
+                                case 2:
+                                    //DTC number response process
+                                    //Extract the data from the response
+                                    String RespData = arduinoMsg.substring("Positive Response".length());
 
-                                //Searching for the description of the DTC in the database
-                                ReadData(code);
+                                    if(RespData.startsWith("1"))
+                                        text.append("Engine check light is ON\n");
+                                    else
+                                        text.append("Engine check light is OFF\n");
 
-                                DTCCodes = DTCCodes.replace(code, "");
-                                //Log.d("DTCCODES", DTCCodes);
+                                    text.append("Number of DTC's: ");
+                                    //Extract number of DTC from response
+                                    String DTCNB = RespData.substring(1);
+                                    text.append(DTCNB);
+
+                                    break;
+                                case 3:
+                                    //Read DTC response process
+                                    String DTCCodes = null;
+
+                                        //String that contains only DTC codes one after another
+                                        DTCCodes = arduinoMsg.substring("Positive Response".length());
+                                        //Log.d("DTCCODES", DTCCodes);
+
+                                        //Until theres enough characters to represent a DTC code process it
+                                        while (DTCCodes.length() > 5) {
+                                            String code = DTCCodes.substring(0, 5);
+                                            Log.d("DTC", code);
+
+                                            //Searching for the description of the DTC in the database
+                                            ReadData(code);
+
+                                            DTCCodes = DTCCodes.replace(code, "");
+                                            Log.d("DTCCODES", DTCCodes);
+                                        }
+                                    break;
+                                case 4:
+                                    //Clear DTC response process
+                                    //TODO implement clear DTC
+                                    break;
                             }
-                        }else
-                            text.append("Negative Response");
 
+                        }
+                        else
+                        {
+                            text.append("Negative Response");
+                        }
                         break;
                 }
             }
@@ -180,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Sending the command
-                String cmdText = "1";
-                connectedThread.write(cmdText);
+                CMD = 1;
+                connectedThread.write("1");
             }
         });
 
@@ -190,8 +231,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Sending the command
-                String cmdText = "2";
-                connectedThread.write(cmdText);
+                CMD = 2;
+                connectedThread.write("2");
             }
         });
 
@@ -200,8 +241,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Sending the command
-                String cmdText = "3";
-                connectedThread.write(cmdText);
+                CMD = 3;
+                connectedThread.write("3");
             }
         });
 
@@ -219,22 +260,21 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //TODO implement warning message for clearing DTC's
                 //Sending the command
-                String cmdText = "4";
-                connectedThread.write(cmdText);
+                CMD = 4;
+                connectedThread.write("4");
             }
         });
 
 
     }
     /**
-     * Function to read from the database
+     * @brief Function to read from the database
      * Firebase has been use as service
      */
     @SuppressLint("SetTextI18n")
     public void ReadData(final String DTCID){
 
         db= FirebaseFirestore.getInstance();
-        //text.setText("The error description will appear here...");
 
         db.collection("CODES")
                 .get()
@@ -250,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                                     ReturnValue[0] = (String) document.getData().get("DESCRIPTION");
                                     //log for debug
                                     Log.d("yes",ReturnValue[0]);
+
                                     if(text.getText().equals("The error description will appear here..."))
                                         text.setText(ReturnValue[0]);
                                     else{
@@ -267,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e("Error","Can't connect to collection");
+                        text.setText("Error, can't connect to database");
                     }
                 });
     }
