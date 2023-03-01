@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,22 +17,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresPermission;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,8 +58,6 @@ public class MainActivity extends AppCompatActivity {
     public static int CMD = 0;
 
     public static final String[] ReturnValue = {null};
-
-    public FirebaseFirestore db;
 
     private final static int CONNECTING_STATUS = 1; // used in bluetooth handler to identify message status
     private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
@@ -250,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         testDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReadData("P0309");
+                ReadData("DF0236");
             }
         });
 
@@ -258,57 +262,118 @@ public class MainActivity extends AppCompatActivity {
         btnClearDTC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO implement warning message for clearing DTC's
-                //Sending the command
-                CMD = 4;
-                connectedThread.write("4");
+                //warning message for clearing DTC's
+                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                // Add the buttons
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+                // Set other dialog properties
+
+                // Create the AlertDialog
+                builder.show();
             }
         });
 
 
     }
     /**
-     * @brief Function to read from the database
-     * Firebase has been use as service
+     * @brief Function to read from the .csv file that contains all the DTCID's
+     * @param DTCID
      */
     @SuppressLint("SetTextI18n")
     public void ReadData(final String DTCID){
+        boolean DTCIDFOUND = false;
+        Log.d("Read Data Function","IN FUNCTION");
 
-        db= FirebaseFirestore.getInstance();
+        try {
+            InputStream in = getResources().openRawResource(R.raw.obdtroublecodes);
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(in, StandardCharsets.UTF_8)
+            );
 
-        db.collection("CODES")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                //Get the data that corresponds to the DTCID from DB
-                                if(document.getData().containsValue(DTCID)) {
-                                    //Store it a one element array and print it in the configured textview
-                                    ReturnValue[0] = (String) document.getData().get("DESCRIPTION");
-                                    //log for debug
-                                    Log.d("yes",ReturnValue[0]);
+            String line="";
+            try {
+                line = reader.readLine();
+                Log.d("Line read", line);
+                //Read all the lines until DTC id is found
+                while(line != null){
+                    //Split by ","
+                    String[] tokens = line.split(",");
 
-                                    if(text.getText().equals("The error description will appear here..."))
-                                        text.setText(ReturnValue[0]);
-                                    else{
-                                        text.append("\n");
-                                        text.append(ReturnValue[0]);
-                                    }
-                                }
-                            }
-                        } else {
-                            Log.w(TAG, "Error getting Description.", task.getException());
-                            text.setText("Error getting Description.");
-                        }
+                    //Search for DTCID
+                    if(tokens[0].equals(DTCID))
+                    {
+                        DTCIDFOUND = true;
+                        Log.d("Description",tokens[1]);
+                        //Output the description of the DTC
+                        if(text.length()==0)
+                            text.setText(tokens[1]+"\n");
+                        else
+                            text.append(tokens[1]+"\n");
+                        break;
                     }
-                }).addOnFailureListener(new OnFailureListener() {
+                    //Read new line
+                    line = reader.readLine();
+                }
+                if(!DTCIDFOUND) {
+                    Toast.makeText(this, "DTC NOT FOUND IN DATABASE", Toast.LENGTH_LONG).show();
+                    //insert the unknown dtc into the db for further investigation
+                    WriteDataToDB(DTCID,"UNKNOWN");
+                    Toast.makeText(this, "UNKNOWN DTC ADDED IN DB", Toast.LENGTH_LONG).show();
+                }
+
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(this,"Can't open .csv file",Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Function to write data into the Firebase Database
+     * @param dtc_code
+     * @param Desc
+     */
+    public void WriteDataToDB(String dtc_code,String Desc)
+    {
+        Log.d(TAG,dtc_code);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        //get date and time as the document name to be inserted
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String millisInString  = dateFormat.format(new Date());
+
+        // Create a new object with the DTC id and the description unknown
+        Map<String, Object> obj = new HashMap<>();
+        obj.put("DTCID", dtc_code);
+        obj.put("DESCRIPTION", Desc);
+        obj.put("TIMESTAMP", millisInString);
+
+        // Add a new document with a generated ID
+        db.collection("UNKNOWN DTCS")
+                .document()
+                .set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG,"Document added");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("Error","Can't connect to collection");
-                        text.setText("Error, can't connect to database");
+                        Log.e(TAG,"Error adding document");
                     }
                 });
     }
