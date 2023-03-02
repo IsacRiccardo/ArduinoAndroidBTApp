@@ -8,10 +8,15 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.common.util.Hex;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,8 +39,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -147,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
 
                         if(arduinoMsg.contains("Positive Response"))
                         {
-                            text.append("Positive Response\n");
+                            String PS = "<font color=#04ff00>Positive Response</font>";
+
+                            text.append(Html.fromHtml(PS));
+                            text.append("\n");
 
                             switch(CMD)
                             {
@@ -156,8 +167,27 @@ public class MainActivity extends AppCompatActivity {
                                     //Supported PID response process
                                     //Extract the data from the response
                                     String RespDataPID = arduinoMsg.substring("Positive Response".length());
-                                    //TODO implement PID processing
 
+                                    //Split the response based on character "," to process every PID
+                                    String [] tokens = RespDataPID.split(",");
+                                    Log.d("PID RESPONSE",RespDataPID);
+
+                                    if(text.length()==0)
+                                    {
+                                        text.setText("Supported PID's:\n");
+                                    }else
+                                        text.append("Supported PID's:\n");
+
+                                    int i = 0;
+
+                                    //iterate through the array of tokens and print the supported PID in HEX format
+                                    while(i<tokens.length - 1){
+                                        //Log.d("INT",Integer.valueOf(tokens[i]).toString());
+                                        String HexValue = Integer.toHexString(Integer.parseInt(tokens[i]));
+                                        //Log.d("HEX",HexValue);
+                                        text.append(HexValue + " ");
+                                        i++;
+                                    }
                                     break;
                                 case 2:
                                     //DTC number response process
@@ -204,7 +234,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else
                         {
-                            text.append("Negative Response");
+                            String NS = "<font color=#ff0000>Negative Response</font>";
+                            text.append(Html.fromHtml(NS));
+                            text.append("\n");
                         }
                         break;
                 }
@@ -262,23 +294,7 @@ public class MainActivity extends AppCompatActivity {
         btnClearDTC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //warning message for clearing DTC's
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                // Add the buttons
-                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-                // Set other dialog properties
-
-                // Create the AlertDialog
-                builder.show();
+                
             }
         });
 
@@ -302,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             String line="";
             try {
                 line = reader.readLine();
-                Log.d("Line read", line);
+                //Log.d("Line read", line);
                 //Read all the lines until DTC id is found
                 while(line != null){
                     //Split by ","
@@ -311,8 +327,20 @@ public class MainActivity extends AppCompatActivity {
                     //Search for DTCID
                     if(tokens[0].equals(DTCID))
                     {
+                        //Categorize the problem
+                        if(DTCID.startsWith("P"))
+                            text.append("Powertrain problem\n");
+                        else if(DTCID.startsWith("C"))
+                            text.append("Chassis problem\n");
+                        else if(DTCID.startsWith("B"))
+                            text.append("Body problem\n");
+                        else if(DTCID.startsWith("U"))
+                            text.append("Network problem\n");
+
+                        //set the value of DTCIDFOUND to true
                         DTCIDFOUND = true;
-                        Log.d("Description",tokens[1]);
+
+                        Log.i("Description",tokens[1]);
                         //Output the description of the DTC
                         if(text.length()==0)
                             text.setText(tokens[1]+"\n");
@@ -377,7 +405,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
     /* ============================ Thread to Create Connection =================================== */
     public static class CreateConnectThread extends Thread {
 
