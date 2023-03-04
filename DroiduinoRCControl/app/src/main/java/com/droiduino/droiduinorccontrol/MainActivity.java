@@ -20,6 +20,7 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,13 +51,15 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button btnPID,btnDTCNumber,btnGetDTC,testDB,btnClearDTC;
+    private Button btnPID;
+    private Button btnDTCNumber;
+    private Button btnGetDTC;
+    private Button btnClearDTC;
+    private ImageButton SendToDB;
 
-    private TextView text;
-    private TextView Dtext;
+    private TextView text, Dtext;
 
     private String deviceName = null;
-    private String deviceAddress;
     public static Handler handler;
     public static BluetoothSocket mmSocket;
     public static ConnectedThread connectedThread;
@@ -82,12 +85,15 @@ public class MainActivity extends AppCompatActivity {
 
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
+        //text
         text = findViewById(R.id.textView);
+        Dtext = findViewById(R.id.DescriptionText);
+        //buttons
         btnPID = findViewById(R.id.buttonPID);
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
         btnGetDTC = findViewById(R.id.buttonGetDTC);
-        testDB = findViewById(R.id.TestDatabase);
-        Dtext = findViewById(R.id.DescriptionText);
+        Button testDB = findViewById(R.id.TestDatabase);
+        SendToDB = findViewById(R.id.imageButton);
         btnClearDTC = findViewById(R.id.buttonClearDTC);
 
         testDB.setEnabled(true);
@@ -97,13 +103,14 @@ public class MainActivity extends AppCompatActivity {
         btnGetDTC.setEnabled(false);
         Dtext.setEnabled(false);
         btnClearDTC.setEnabled(false);
+        SendToDB.setEnabled(false);
 
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = getIntent().getStringExtra("deviceName");
         if (deviceName != null){
             // Get the device address to make BT Connection
-            deviceAddress = getIntent().getStringExtra("deviceAddress");
+            String deviceAddress = getIntent().getStringExtra("deviceAddress");
             // Show progress and connection status
             toolbar.setSubtitle("Connecting to " + deviceName + "...");
             progressBar.setVisibility(View.VISIBLE);
@@ -115,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             selected device (see the thread code below)
              */
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            createConnectThread = new CreateConnectThread(bluetoothAdapter,deviceAddress);
+            createConnectThread = new CreateConnectThread(bluetoothAdapter, deviceAddress);
             createConnectThread.start();
         }
 
@@ -137,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                                 btnDTCNumber.setEnabled(true);
                                 btnGetDTC.setEnabled(true);
                                 btnClearDTC.setEnabled(true);
+                                SendToDB.setEnabled(true);
                                 break;
                             case -1:
                                 toolbar.setSubtitle("Device fails to connect");
@@ -174,9 +182,9 @@ public class MainActivity extends AppCompatActivity {
 
                                     if(text.length()==0)
                                     {
-                                        text.setText("Supported PID's:\n");
+                                        text.setText(">Supported PID's:\n");
                                     }else
-                                        text.append("Supported PID's:\n");
+                                        text.append(">Supported PID's:\n");
 
                                     int i = 0;
 
@@ -195,11 +203,11 @@ public class MainActivity extends AppCompatActivity {
                                     String RespData = arduinoMsg.substring("Positive Response".length());
 
                                     if(RespData.startsWith("1"))
-                                        text.append("Engine check light is ON\n");
+                                        text.append(">Engine check light is ON\n");
                                     else
-                                        text.append("Engine check light is OFF\n");
+                                        text.append(">Engine check light is OFF\n");
 
-                                    text.append("Number of DTC's: ");
+                                    text.append(">Number of DTC's: ");
                                     //Extract number of DTC from response
                                     String DTCNB = RespData.substring(1);
                                     text.append(DTCNB);
@@ -286,18 +294,33 @@ public class MainActivity extends AppCompatActivity {
         testDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReadData("DF0236");
+                ReadData("P0236");
             }
         });
 
-        //Button for getting the DTC codes
+        //Button for clearing the DTC codes
         btnClearDTC.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                //TODO implement a warning
+                //Sending the command
+                //CMD = 4;
+                //connectedThread.write("4");
             }
         });
 
+        //Button used for logging the response
+        SendToDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!text.getText().toString().equals("The error description will appear here..."))
+                {
+                    //Log.i("TEXT",text.getText().toString());
+                    //If we have relevant information displayed than send it to Firebase DB
+                    WriteDataToDB("",text.getText().toString(),"LOG");
+                }
+            }
+        });
 
     }
     /**
@@ -329,13 +352,13 @@ public class MainActivity extends AppCompatActivity {
                     {
                         //Categorize the problem
                         if(DTCID.startsWith("P"))
-                            text.append("Powertrain problem\n");
+                            text.append(">Powertrain problem:\n");
                         else if(DTCID.startsWith("C"))
-                            text.append("Chassis problem\n");
+                            text.append(">Chassis problem:\n");
                         else if(DTCID.startsWith("B"))
-                            text.append("Body problem\n");
+                            text.append(">Body problem:\n");
                         else if(DTCID.startsWith("U"))
-                            text.append("Network problem\n");
+                            text.append(">Network problem:\n");
 
                         //set the value of DTCIDFOUND to true
                         DTCIDFOUND = true;
@@ -352,10 +375,10 @@ public class MainActivity extends AppCompatActivity {
                     line = reader.readLine();
                 }
                 if(!DTCIDFOUND) {
-                    Toast.makeText(this, "DTC NOT FOUND IN DATABASE", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "DTC Not found in local DB", Toast.LENGTH_LONG).show();
                     //insert the unknown dtc into the db for further investigation
-                    WriteDataToDB(DTCID,"UNKNOWN");
-                    Toast.makeText(this, "UNKNOWN DTC ADDED IN DB", Toast.LENGTH_LONG).show();
+                    WriteDataToDB(DTCID,"UNKNOWN","UNKNOWN DTCS");
+                    Toast.makeText(this, "Unknown DTC added in online DB", Toast.LENGTH_LONG).show();
                 }
 
             }catch (Exception e) {
@@ -370,10 +393,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Function to write data into the Firebase Database
+     * Will be used to store unknown DTC's and Log data of the response
      * @param dtc_code
      * @param Desc
+     * @param Collection
      */
-    public void WriteDataToDB(String dtc_code,String Desc)
+    public void WriteDataToDB(String dtc_code,String Desc,String Collection)
     {
         Log.d(TAG,dtc_code);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -385,12 +410,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a new object with the DTC id and the description unknown
         Map<String, Object> obj = new HashMap<>();
-        obj.put("DTCID", dtc_code);
+        //Insert the unknown dtc only if the parameter exists
+        if(!dtc_code.equals(""))
+            obj.put("DTCID", dtc_code);
+        //This parameter will contain the description of the DTC or the full log data
         obj.put("DESCRIPTION", Desc);
         obj.put("TIMESTAMP", millisInString);
 
         // Add a new document with a generated ID
-        db.collection("UNKNOWN DTCS")
+        db.collection(Collection)
                 .document()
                 .set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

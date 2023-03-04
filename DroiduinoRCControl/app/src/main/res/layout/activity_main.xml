@@ -25,14 +25,13 @@
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="181dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="182dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/chipGroup"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/buttonConnect"
@@ -45,79 +44,115 @@
         app:layout_constraintEnd_toEndOf="@+id/toolbar"
         app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
-        android:layout_width="330dp"
-        android:layout_height="297dp"
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <Button
-            android:id="@+id/buttonPID"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="GET SUPPORTED PID'S"
-            app:backgroundTint="@color/colorPrimary" />
-
-        <Button
-            android:id="@+id/buttonDtcNumber"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="GET DTC NUMBER"
-            app:backgroundTint="@color/colorPrimary" />
-
-        <Button
-            android:id="@+id/buttonGetDTC"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="GET DTC CODES"
-            app:backgroundTint="@color/colorPrimary" />
-
-        <Button
-            android:id="@+id/buttonClearDTC"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="CLEAR DTC'S"
-            app:backgroundTint="@color/colorPrimary"
-            app:backgroundTintMode="screen" />
-
-        <Button
-            android:id="@+id/TestDatabase"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Test Database" />
-    </com.google.android.material.chip.ChipGroup>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="333dp"
-        android:layout_height="197dp"
-        android:layout_marginTop="100dp"
-        android:text="The error description will appear here..."
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/DescriptionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/buttonPID"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="GET SUPPORTED PID'S"
+                    app:backgroundTint="@color/colorPrimary" />
+
+                <Button
+                    android:id="@+id/buttonDtcNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="GET DTC NUMBER"
+                    app:backgroundTint="@color/colorPrimary" />
+
+                <Button
+                    android:id="@+id/buttonGetDTC"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="GET DTC CODES"
+                    app:backgroundTint="@color/colorPrimary" />
+
+                <Button
+                    android:id="@+id/buttonClearDTC"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="CLEAR DTC'S"
+                    app:backgroundTint="@color/colorPrimary"
+                    app:backgroundTintMode="screen" />
+
+                <Button
+                    android:id="@+id/TestDatabase"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Test Database" />
+
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+    </ScrollView>
 
     <EditText
         android:id="@+id/DescriptionText"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="65dp"
+        android:layout_width="0dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="25dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Errors Description"
         app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+        app:layout_constraintHorizontal_bias="0.078"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="16dp"
+        android:text="The error description will appear here..."
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.194"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        style="@style/Widget.AppCompat.ImageButton"
+        android:layout_width="95dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="5dp"
+        android:adjustViewBounds="true"
+        android:background="#70ED81"
+        android:cropToPadding="true"
+        android:rotation="0"
+        android:scaleType="centerInside"
+        android:text="Send"
+        android:tint="#050505"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView1"
+        app:srcCompat="@android:drawable/ic_menu_upload" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
