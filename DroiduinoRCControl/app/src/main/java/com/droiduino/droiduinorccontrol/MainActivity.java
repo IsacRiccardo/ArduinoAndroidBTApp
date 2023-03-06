@@ -6,17 +6,12 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,11 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.common.util.Hex;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,10 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public static BluetoothSocket mmSocket;
     public static ConnectedThread connectedThread;
     public static CreateConnectThread createConnectThread;
+
+    public int[] SupportedPIDs = new int[33];
 
     //Variable that will determine how the response will be processed
     public static int CMD = 0;
@@ -182,15 +175,20 @@ public class MainActivity extends AppCompatActivity {
 
                                     if(text.length()==0)
                                     {
-                                        text.setText(">Supported PID's:\n");
+                                        text.setText(">>Service 1 Supported PID's [01-20]:\n");
                                     }else
-                                        text.append(">Supported PID's:\n");
+                                        text.append(">>Service 1 Supported PID's [01-20]:\n");
 
                                     int i = 0;
 
                                     //iterate through the array of tokens and print the supported PID in HEX format
                                     while(i<tokens.length - 1){
                                         //Log.d("INT",Integer.valueOf(tokens[i]).toString());
+
+                                        //insert into string the supported PID's
+                                        SupportedPIDs[Integer.parseInt(tokens[i])] = 1;
+
+                                        //convert the value to hex
                                         String HexValue = Integer.toHexString(Integer.parseInt(tokens[i]));
                                         //Log.d("HEX",HexValue);
                                         text.append(HexValue + " ");
@@ -235,7 +233,11 @@ public class MainActivity extends AppCompatActivity {
                                     break;
                                 case 4:
                                     //Clear DTC response process
-                                    //TODO implement clear DTC
+                                    String ClearDTCMSG = null;
+                                    ClearDTCMSG = arduinoMsg.substring("Positive Response".length());
+
+                                    text.append(ClearDTCMSG + "\n");
+                                    Log.d("Clear DTC MSG", ClearDTCMSG);
                                     break;
                             }
 
@@ -267,6 +269,16 @@ public class MainActivity extends AppCompatActivity {
                 //Sending the command
                 CMD = 1;
                 connectedThread.write("1");
+            }
+        });
+
+        btnPID.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent intent = new Intent(MainActivity.this,PidActivity.class);
+                intent.putExtra("Supported PID",SupportedPIDs);
+                startActivity(intent);
+                return false;
             }
         });
 
@@ -304,8 +316,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //TODO implement a warning
                 //Sending the command
-                //CMD = 4;
-                //connectedThread.write("4");
+                CMD = 4;
+                connectedThread.write("4");
             }
         });
 
@@ -316,8 +328,10 @@ public class MainActivity extends AppCompatActivity {
                 if(!text.getText().toString().equals("The error description will appear here..."))
                 {
                     //Log.i("TEXT",text.getText().toString());
+
                     //If we have relevant information displayed than send it to Firebase DB
                     WriteDataToDB("",text.getText().toString(),"LOG");
+                    Toast.makeText(MainActivity.this,"Data logged",Toast.LENGTH_SHORT).show();
                 }
             }
         });
