@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     public int[] SupportedPIDs = new int[33];
 
     //Variable that will determine how the response will be processed
-    public static int CMD = 0;
+    public static int CMD;
+
+    public static boolean PID = false;
 
     public static final String[] ReturnValue = {null};
 
@@ -128,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             public void handleMessage(@NonNull Message msg){
                 switch (msg.what){
                     case CONNECTING_STATUS:
-                        switch(msg.arg1){
+                        switch(msg.arg1) {
                             case 1:
                                 toolbar.setSubtitle("Connected to " + deviceName);
                                 progressBar.setVisibility(View.GONE);
@@ -138,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
                                 btnGetDTC.setEnabled(true);
                                 btnClearDTC.setEnabled(true);
                                 SendToDB.setEnabled(true);
+                                text.setEnabled(true);
+                                text.setMovementMethod(new ScrollingMovementMethod());
                                 break;
                             case -1:
                                 toolbar.setSubtitle("Device fails to connect");
@@ -148,8 +154,11 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case MESSAGE_READ:
-                        //clearing the textview
-                        text.setText("");
+                        //clearing the textview if PID is false
+                        if(!PID)
+                            text.setText("");
+                        else
+                            text.append("\n");
 
                         // Read message from Arduino
                         String arduinoMsg = msg.obj.toString();
@@ -163,11 +172,13 @@ public class MainActivity extends AppCompatActivity {
 
                             switch(CMD)
                             {
-                                case 0: Log.e("Error", "Case 0 in command switch"); break;
-                                case 1:
+                                case 33:
                                     //Supported PID response process
                                     //Extract the data from the response
                                     String RespDataPID = arduinoMsg.substring("Positive Response".length());
+
+                                    //Initialize array
+                                    Arrays.fill(SupportedPIDs, 0);
 
                                     //Split the response based on character "," to process every PID
                                     String [] tokens = RespDataPID.split(",");
@@ -194,8 +205,10 @@ public class MainActivity extends AppCompatActivity {
                                         text.append(HexValue + " ");
                                         i++;
                                     }
+                                    Log.e(TAG, Arrays.toString(SupportedPIDs));
+                                    CMD = 0;
                                     break;
-                                case 2:
+                                case 34:
                                     //DTC number response process
                                     //Extract the data from the response
                                     String RespData = arduinoMsg.substring("Positive Response".length());
@@ -210,8 +223,9 @@ public class MainActivity extends AppCompatActivity {
                                     String DTCNB = RespData.substring(1);
                                     text.append(DTCNB);
 
+                                    CMD = 0;
                                     break;
-                                case 3:
+                                case 35:
                                     //Read DTC response process
                                     String DTCCodes = null;
 
@@ -230,20 +244,45 @@ public class MainActivity extends AppCompatActivity {
                                             DTCCodes = DTCCodes.replace(code, "");
                                             Log.d("DTCCODES", DTCCodes);
                                         }
+                                    CMD = 0;
                                     break;
-                                case 4:
+                                case 36:
                                     //Clear DTC response process
                                     String ClearDTCMSG = null;
                                     ClearDTCMSG = arduinoMsg.substring("Positive Response".length());
 
                                     text.append(ClearDTCMSG + "\n");
                                     Log.d("Clear DTC MSG", ClearDTCMSG);
+
+                                    //Reset command
+                                    CMD = 0;
                                     break;
+
+                                // The default case will treat the response for the PID's requests
+                                default:
+                                    String str = arduinoMsg.substring("Positive Response".length());
+                                    Log.d(TAG,str);
+                                    if(str.startsWith("3"))
+                                    {
+                                        int EngLoad;
+                                        String hex = str.substring(1);
+
+                                        EngLoad = Integer.parseInt(hex.trim(), 16);
+
+                                        //Append the engine load to textview
+                                        text.append("Engine Load: " + Double.toString((float)EngLoad/2.55));
+
+                                    }
+                                    if(text.length()!=0)
+                                        text.append(str + "\n");
+                                    break;
+
                             }
 
                         }
                         else
                         {
+                            Log.e("ArduinoMSG",arduinoMsg);
                             String NS = "<font color=#ff0000>Negative Response</font>";
                             text.append(Html.fromHtml(NS));
                             text.append("\n");
@@ -267,18 +306,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Sending the command
-                CMD = 1;
-                connectedThread.write("1");
+                CMD = 33;
+                connectedThread.write("33");
             }
         });
 
         btnPID.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Intent intent = new Intent(MainActivity.this,PidActivity.class);
-                intent.putExtra("Supported PID",SupportedPIDs);
-                startActivity(intent);
-                return false;
+                //Clear the textview
+                text.setText("");
+
+                //Variable to inform that the textview shouldn't be cleared anymore
+                PID=true;
+
+                //Starting the thread
+                MyThread thread = new MyThread();
+                thread.start();
+
+                return true;
             }
         });
 
@@ -287,8 +333,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Sending the command
-                CMD = 2;
-                connectedThread.write("2");
+                CMD = 34;
+                connectedThread.write("34");
             }
         });
 
@@ -297,8 +343,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Sending the command
-                CMD = 3;
-                connectedThread.write("3");
+                CMD = 35;
+                connectedThread.write("35");
             }
         });
 
@@ -316,8 +362,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //TODO implement a warning
                 //Sending the command
-                CMD = 4;
-                connectedThread.write("4");
+                CMD = 36;
+                connectedThread.write("36");
             }
         });
 
@@ -327,15 +373,76 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(!text.getText().toString().equals("The error description will appear here..."))
                 {
-                    //Log.i("TEXT",text.getText().toString());
+                    if(text.length()>0) {
+                        //Log.i("TEXT",text.getText().toString());
 
-                    //If we have relevant information displayed than send it to Firebase DB
-                    WriteDataToDB("",text.getText().toString(),"LOG");
-                    Toast.makeText(MainActivity.this,"Data logged",Toast.LENGTH_SHORT).show();
+                        //If we have relevant information displayed than send it to Firebase DB
+                        WriteDataToDB("", text.getText().toString(), "LOG");
+                        Toast.makeText(MainActivity.this, "Data logged", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(MainActivity.this, "No relevant data to be logged", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this, "No relevant data to be logged", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+    }
+
+    /**
+     * Thread to send all the commands supported to get all the information
+     * !Command 0x0100 (Get Supported PIDs) must be executed first
+     */
+    public class MyThread extends Thread {
+        public void run(){
+            Looper.prepare();//Call looper.prepare()
+
+            //Variable to test if previous Get Supported PIDs command has been executed
+            boolean SupportedPIDComm = false;
+            int index = 2;
+            while(index<33)
+            {
+                if(SupportedPIDs[index] == 1)
+                {
+                    Log.e(TAG, String.valueOf(SupportedPIDs[index]));
+                    SupportedPIDComm = true;
+                    if(index>10) {
+                        Log.e("Index", Integer.toString(index));
+                        MainActivity.connectedThread.write(Integer.toString(index));
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else{
+                        String Comanda = null;
+                        Comanda = "0" + index;
+                        Log.e("Commmmm",Comanda);
+                        MainActivity.connectedThread.write(Comanda);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                index++;
+            }
+            if(!SupportedPIDComm)
+            {
+                //Let the user know that he must execute the "Get Supported PIDs" command first
+                Toast.makeText(MainActivity.this,"Please execute Get Supported PIDs first",Toast.LENGTH_LONG).show();
+            }else{
+
+            }
+            //All the commands have been transmitted, reset the PID variable
+            //The textview can be cleared when a new request is sent
+            PID=false;
+
+            Log.d("Array", Arrays.toString(SupportedPIDs));
+            Looper.loop();//Call looper.prepare()
+        }
     }
     /**
      * @brief Function to read from the .csv file that contains all the DTCID's
@@ -562,7 +669,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* Call this from the main activity to send data to the remote device */
         public void write(String input) {
-            byte[] bytes = input.getBytes(); //converts entered String into bytes
+            byte [] bytes = input.getBytes();
             try {
                 mmOutStream.write(bytes);
             } catch (IOException e) {
@@ -574,7 +681,7 @@ public class MainActivity extends AppCompatActivity {
         public void cancel() {
             try {
                 mmSocket.close();
-            } catch (IOException e) { }
+            } catch (IOException ignored) { }
         }
     }
 
