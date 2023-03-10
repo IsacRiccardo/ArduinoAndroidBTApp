@@ -75,29 +75,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="GET SUPPORTED PID'S"
-                    app:backgroundTint="@color/colorPrimary" />
+                     />
 
                 <Button
                     android:id="@+id/buttonDtcNumber"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="GET DTC NUMBER"
-                    app:backgroundTint="@color/colorPrimary" />
+                     />
 
                 <Button
                     android:id="@+id/buttonGetDTC"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="GET DTC CODES"
-                    app:backgroundTint="@color/colorPrimary" />
+                     />
 
                 <Button
                     android:id="@+id/buttonClearDTC"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="CLEAR DTC'S"
-                    app:backgroundTint="@color/colorPrimary"
-                    app:backgroundTintMode="screen" />
+                    />
+
+                <Button
+                    android:id="@+id/buttonBV"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Battery Voltage" />
 
                 <Button
                     android:id="@+id/TestDatabase"
