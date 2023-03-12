@@ -71,6 +71,12 @@
                 android:layout_height="match_parent">
 
                 <Button
+                    android:id="@+id/buttonDP"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Detect Protocol" />
+
+                <Button
                     android:id="@+id/buttonPID"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"

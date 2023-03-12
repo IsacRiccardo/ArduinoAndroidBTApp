@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnClearDTC;
     private ImageButton SendToDB;
 
+    private Button DetectProtocol;
     private Button BvButton;
 
     private TextView text, Dtext;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         SendToDB = findViewById(R.id.imageButton);
         BvButton = findViewById(R.id.buttonBV);
         btnClearDTC = findViewById(R.id.buttonClearDTC);
+        DetectProtocol = findViewById(R.id.buttonDP);
 
         //Disable buttons until BT connection is established
         btnPID.setEnabled(false);
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         btnClearDTC.setEnabled(false);
         SendToDB.setEnabled(false);
         BvButton.setEnabled(false);
+        DetectProtocol.setEnabled(false);
 
 
         // If a bluetooth device has been selected from SelectDeviceActivity
@@ -147,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                                 btnClearDTC.setEnabled(true);
                                 SendToDB.setEnabled(true);
                                 BvButton.setEnabled(true);
+                                DetectProtocol.setEnabled(true);
                                 text.setEnabled(true);
                                 text.setMovementMethod(new ScrollingMovementMethod());
                                 break;
@@ -271,15 +275,33 @@ public class MainActivity extends AppCompatActivity {
                                     break;
 
                                 case 37:
-                                    String BatteryV = arduinoMsg.substring("Positive Response".length());
+                                    String BatteryVDesc = arduinoMsg.substring("Positive Response".length());
 
-                                    Log.d("Battery Voltage", BatteryV);
-                                    text.append("Battery Voltage: " + BatteryV + "\n");
+                                    if(BatteryVDesc.startsWith("V"))
+                                    {
+                                        String Voltage = BatteryVDesc.substring(1);
+                                        Log.d("Battery Voltage", Voltage);
+                                        text.append("Battery Voltage: " + Voltage + "\n");
+                                    }
 
                                     //Reset command variable
                                     CMD = 0;
                                     break;
 
+                                case 38:
+                                    String ProtocolDesc = arduinoMsg.substring("Positive Response".length());
+
+                                    if(ProtocolDesc.startsWith("P"))
+                                    {
+                                        String Protocol = ProtocolDesc.substring(1);
+
+                                        Log.d("PROTOCOL", Protocol);
+                                        text.append("Protocol: " + Protocol + "\n");
+                                    }
+
+                                    //Reset command variable
+                                    CMD = 0;
+                                    break;
 
                                 // The default case will treat the response for the PID's requests
                                 default:
@@ -484,6 +506,15 @@ public class MainActivity extends AppCompatActivity {
                 //Sending the command
                 CMD = 37;
                 connectedThread.write("37");
+            }
+        });
+
+        DetectProtocol.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Sending the command
+                CMD = 38;
+                connectedThread.write("38");
             }
         });
 
