@@ -104,12 +104,6 @@
                     android:layout_height="60dp"
                     android:text="Battery Voltage" />
 
-                <Button
-                    android:id="@+id/TestDatabase"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:text="Test Database" />
-
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
     </ScrollView>

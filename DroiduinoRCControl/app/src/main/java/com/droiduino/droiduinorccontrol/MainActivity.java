@@ -93,12 +93,10 @@ public class MainActivity extends AppCompatActivity {
         btnPID = findViewById(R.id.buttonPID);
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
         btnGetDTC = findViewById(R.id.buttonGetDTC);
-        Button testDB = findViewById(R.id.TestDatabase);
         SendToDB = findViewById(R.id.imageButton);
         BvButton = findViewById(R.id.buttonBV);
         btnClearDTC = findViewById(R.id.buttonClearDTC);
 
-        testDB.setEnabled(true);
         //Disable buttons until BT connection is established
         btnPID.setEnabled(false);
         btnDTCNumber.setEnabled(false);
@@ -448,14 +446,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Button for testing the DB
-        testDB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ReadData("P0236");
-            }
-        });
-
         //Button for clearing the DTC codes
         btnClearDTC.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -512,24 +502,29 @@ public class MainActivity extends AppCompatActivity {
             int index = 2;
             while(index<33)
             {
+                //Verify if Pid (represented by the index) is suppported
                 if(SupportedPIDs[index] == 1)
                 {
-                    Log.e(TAG, String.valueOf(SupportedPIDs[index]));
-                    SupportedPIDComm = true;
-                    if(index>=10) {
-                        Log.e("Index", Integer.toString(index));
-                        MainActivity.connectedThread.write(Integer.toString(index));
-                    }else{
-                        String Comanda = null;
-                        Comanda = "0" + index;
-                        Log.e("Commmmm",Comanda);
-                        MainActivity.connectedThread.write(Comanda);
-                    }
-                    //Put the thread to sleep because Arduino is not that fast
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    //Filter the indexes we send, because not all supported indexes will be implemented in Arduino code
+                    //Current implemented indexes: 4, 5, 10, 12, 17
+                    if(index == 4 || index == 5 || index == 10 || index == 12 || index == 17) {
+                        Log.e(TAG, String.valueOf(SupportedPIDs[index]));
+                        SupportedPIDComm = true;
+                        if (index >= 10) {
+                            Log.e("Index", Integer.toString(index));
+                            MainActivity.connectedThread.write(Integer.toString(index));
+                        } else {
+                            String Comanda = null;
+                            Comanda = "0" + index;
+                            Log.e("Commmmm", Comanda);
+                            MainActivity.connectedThread.write(Comanda);
+                        }
+                        //Put the thread to sleep because Arduino is not that fast
+                        try {
+                            Thread.sleep(900);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
                 index++;
