@@ -4,60 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleTextColor="@color/design_default_color_background"
-        app:title="Bluetooth Diagnostics"
-        app:titleTextColor="@color/design_default_color_on_primary" />
+    tools:context=".MainActivity"
+    android:background="@color/background_color">
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="3dp"
         app:layout_constraintBottom_toTopOf="@+id/scrollView1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-
-    <Button
-        android:id="@+id/buttonConnect"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connect"
-        android:textColor="@color/design_default_color_background"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="@+id/toolbar" />
 
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toTopOf="@+id/DescriptionText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -74,41 +46,39 @@
                     android:id="@+id/buttonDP"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="Detect Protocol" />
+                    android:text="@string/detect_protocol" />
 
                 <Button
                     android:id="@+id/buttonPID"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="GET SUPPORTED PID'S"
-                     />
+                    android:text="@string/get_supported_pid_s" />
 
                 <Button
                     android:id="@+id/buttonDtcNumber"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="GET DTC NUMBER"
-                     />
+                    android:text="@string/get_dtc_number" />
 
                 <Button
                     android:id="@+id/buttonGetDTC"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="GET DTC CODES"
-                     />
+                    android:text="@string/get_dtc_codes" />
 
                 <Button
                     android:id="@+id/buttonClearDTC"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="CLEAR DTC'S"
-                    />
+                    android:text="@string/clear_dtc_s"
+                    tools:ignore="HardcodedText" />
 
                 <Button
                     android:id="@+id/buttonBV"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="Battery Voltage" />
+                    android:text="@string/battery_voltage"
+                    tools:ignore="HardcodedText" />
 
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
@@ -120,7 +90,9 @@
         android:layout_height="49dp"
         android:layout_marginStart="25dp"
         android:ems="10"
+        android:fontFamily="sans-serif-black"
         android:inputType="textPersonName"
+        android:tint="@color/colorPrimaryDark"
         android:text="Errors Description"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
@@ -154,19 +126,35 @@
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="95dp"
         android:layout_height="46dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="35dp"
         android:layout_marginBottom="5dp"
         android:adjustViewBounds="true"
         android:background="#70ED81"
         android:cropToPadding="true"
         android:rotation="0"
         android:scaleType="centerInside"
-        android:text="Send"
         android:tint="#050505"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView1"
         app:srcCompat="@android:drawable/ic_menu_upload" />
+
+    <EditText
+        android:id="@+id/Commands"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:fontFamily="sans-serif-black"
+        android:inputType="textPersonName"
+        android:text="Commands"
+        android:tint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

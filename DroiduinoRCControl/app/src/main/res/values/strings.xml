@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Droiduino RC Car Hack</string>
+    <string name="app_name">Bluetooth Diagnostics</string>
+    <string name="help">Help</string>
+    <string name="darkmode">Dark Mode</string>
+    <string name="connect">Connect</string>
+    <string name="detect_protocol">Detect Protocol</string>
+    <string name="get_supported_pid_s">GET SUPPORTED PID\'S</string>
+    <string name="get_dtc_number">GET DTC NUMBER</string>
+    <string name="get_dtc_codes">GET DTC CODES</string>
+    <string name="clear_dtc_s">CLEAR DTC\'S</string>
+    <string name="battery_voltage">Battery Voltage</string>
 </resources>

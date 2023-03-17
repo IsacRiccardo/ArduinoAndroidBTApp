@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class SelectDeviceActivity extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class SelectDeviceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_device);
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle(Html.fromHtml("<font color=#FFFFFF>" + getString(R.string.app_name)+ "</font>"));
 
         // Bluetooth Setup
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

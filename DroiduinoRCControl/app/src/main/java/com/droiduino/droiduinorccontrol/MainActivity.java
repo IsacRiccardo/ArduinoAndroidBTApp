@@ -2,8 +2,6 @@ package com.droiduino.droiduinorccontrol;
 
 import static android.content.ContentValues.TAG;
 
-import static java.lang.Math.round;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,6 +14,9 @@ import android.os.Message;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -25,11 +26,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,6 +45,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static boolean PID = false;
 
-    public static final String[] ReturnValue = {null};
-
     private final static int CONNECTING_STATUS = 1; // used in bluetooth handler to identify message status
     private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
 
@@ -81,15 +83,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // UI Initialization
-        final Button buttonConnect = findViewById(R.id.buttonConnect);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-
         final ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         //text
         text = findViewById(R.id.textView);
         Dtext = findViewById(R.id.DescriptionText);
+        TextView Commands = findViewById(R.id.Commands);
         //buttons
         btnPID = findViewById(R.id.buttonPID);
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
@@ -108,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
         SendToDB.setEnabled(false);
         BvButton.setEnabled(false);
         DetectProtocol.setEnabled(false);
+        Commands.setEnabled(false);
 
+        Objects.requireNonNull(getSupportActionBar()).setTitle(Html.fromHtml("<font color=#FFFFFF>" + getString(R.string.app_name)+ "</font>"));
 
         // If a bluetooth device has been selected from SelectDeviceActivity
         deviceName = getIntent().getStringExtra("deviceName");
@@ -116,9 +117,7 @@ public class MainActivity extends AppCompatActivity {
             // Get the device address to make BT Connection
             String deviceAddress = getIntent().getStringExtra("deviceAddress");
             // Show progress and connection status
-            toolbar.setSubtitle("Connecting to " + deviceName + "...");
             progressBar.setVisibility(View.VISIBLE);
-            buttonConnect.setEnabled(false);
 
             /*
             This is the most important piece of code. When "deviceName" is found
@@ -141,9 +140,8 @@ public class MainActivity extends AppCompatActivity {
                     case CONNECTING_STATUS:
                         switch(msg.arg1) {
                             case 1:
-                                toolbar.setSubtitle("Connected to " + deviceName);
+                                Toast.makeText(MainActivity.this, "Device Connected", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                buttonConnect.setEnabled(true);
                                 btnPID.setEnabled(true);
                                 btnDTCNumber.setEnabled(true);
                                 btnGetDTC.setEnabled(true);
@@ -155,9 +153,8 @@ public class MainActivity extends AppCompatActivity {
                                 text.setMovementMethod(new ScrollingMovementMethod());
                                 break;
                             case -1:
-                                toolbar.setSubtitle("Device fails to connect");
+                                Toast.makeText(MainActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                buttonConnect.setEnabled(true);
                                 break;
                         }
                         break;
@@ -241,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 case 35:
                                     //Read DTC response process
-                                    String DTCCodes = null;
+                                    String DTCCodes;
 
                                         //String that contains only DTC codes one after another
                                         DTCCodes = arduinoMsg.substring("Positive Response".length());
@@ -329,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                                         CoolantTemp = Integer.parseInt(hex.trim(), 16);
 
                                         //Append the engine load to textview
-                                        text.append("Coolant Temperature: " + Integer.toString(CoolantTemp-40) + " Celsius\n");
+                                        text.append("Coolant Temperature: " + (CoolantTemp - 40) + " Celsius\n");
 
                                         //Offer a feedback to the user about the temperature
                                         if(CoolantTemp-40 > 200)
@@ -362,7 +359,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     }else if(str.startsWith("C")) {
                                         //RPM
-                                        int RPM_A=0,RPM_B=0;
+                                        int RPM_A,RPM_B;
                                         String hex = str.substring(1);
 
                                         String Hex_A = hex.substring(0,2);
@@ -377,11 +374,11 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d(TAG,Hex_B);
 
                                         //Append the engine load to textview
-                                        text.append("Engine speed: " + Integer.toString((256*RPM_A+RPM_B)/4) + " RPM\n");
+                                        text.append("Engine speed: " + (256 * RPM_A + RPM_B) / 4 + " RPM\n");
 
                                     }else if(str.startsWith("D")) {
                                         //Throttle Position
-                                        int TP=0;
+                                        int TP;
 
                                         String hex = str.substring(1);
 
@@ -389,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d(TAG,Integer.toString(TP));
 
                                         //Append the engine load to textview
-                                        text.append("Throttle Position: " + Integer.toString((100*TP)/255) + "%\n");
+                                        text.append("Throttle Position: " + (100 * TP) / 255 + "%\n");
 
                                     }else if(text.length()!=0)
                                             text.append(str + "\n");
@@ -411,113 +408,105 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        // Select Bluetooth Device
-        buttonConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SelectDeviceActivity.class);
-                startActivity(intent);
-            }
-        });
-
         //Button for getting suppported PID's
-        btnPID.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Sending the command
-                CMD = 33;
-                connectedThread.write("33");
-            }
+        btnPID.setOnClickListener(view -> {
+            //Sending the command
+            CMD = 33;
+            connectedThread.write("33");
         });
 
-        btnPID.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                //Set the textview
-                text.setText("GENERAL INFO\n");
-                text.append("Some PIDs may not be implemented!\n");
+        btnPID.setOnLongClickListener(view -> {
+            //Set the textview
+            text.setText("GENERAL INFO\n");
+            text.append("Some PIDs may not be implemented!\n");
 
-                //Variable to inform that the textview shouldn't be cleared anymore
-                PID=true;
+            //Variable to inform that the textview shouldn't be cleared anymore
+            PID=true;
 
-                //Starting the thread
-                MyThread thread = new MyThread();
-                thread.start();
+            //Starting the thread
+            MyThread thread = new MyThread();
+            thread.start();
 
-                return true;
-            }
+            return true;
         });
 
         //Button for getting the DTC's number
-        btnDTCNumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Sending the command
-                CMD = 34;
-                connectedThread.write("34");
-            }
+        btnDTCNumber.setOnClickListener(view -> {
+            //Sending the command
+            CMD = 34;
+            connectedThread.write("34");
         });
 
         //Button for getting the DTC codes
-        btnGetDTC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Sending the command
-                CMD = 35;
-                connectedThread.write("35");
-            }
+        btnGetDTC.setOnClickListener(view -> {
+            //Sending the command
+            CMD = 35;
+            connectedThread.write("35");
         });
 
         //Button for clearing the DTC codes
-        btnClearDTC.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO implement a warning
-                //Sending the command
-                CMD = 36;
-                connectedThread.write("36");
-            }
+        btnClearDTC.setOnClickListener(view -> {
+            //TODO implement a warning
+            //Sending the command
+            CMD = 36;
+            connectedThread.write("36");
         });
 
         //Button used for logging the response
-        SendToDB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!text.getText().toString().equals("The error description will appear here..."))
-                {
-                    if(text.length()>0) {
-                        //Log.i("TEXT",text.getText().toString());
+        SendToDB.setOnClickListener(view -> {
+            if(!text.getText().toString().equals("The error description will appear here..."))
+            {
+                if(text.length()>0) {
+                    //Log.i("TEXT",text.getText().toString());
 
-                        //If we have relevant information displayed than send it to Firebase DB
-                        WriteDataToDB("", text.getText().toString(), "LOG");
-                        Toast.makeText(MainActivity.this, "Data logged", Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(MainActivity.this, "No relevant data to be logged", Toast.LENGTH_SHORT).show();
-                    }
+                    //If we have relevant information displayed than send it to Firebase DB
+                    WriteDataToDB("", text.getText().toString(), "LOG");
+                    Toast.makeText(MainActivity.this, "Data logged", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(MainActivity.this, "No relevant data to be logged", Toast.LENGTH_SHORT).show();
                 }
+            }else{
+                Toast.makeText(MainActivity.this, "No relevant data to be logged", Toast.LENGTH_SHORT).show();
             }
         });
 
-        BvButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Sending the command
-                CMD = 37;
-                connectedThread.write("37");
-            }
+        BvButton.setOnClickListener(view -> {
+            //Sending the command
+            CMD = 37;
+            connectedThread.write("37");
         });
 
-        DetectProtocol.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Sending the command
-                CMD = 38;
-                connectedThread.write("38");
-            }
+        DetectProtocol.setOnClickListener(view -> {
+            //Sending the command
+            CMD = 38;
+            connectedThread.write("38");
         });
+    }
 
+    @Override
+    public boolean onCreatePanelMenu(int featureId, @NonNull Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.help:
+                //Display help for user
+                Intent intentHelp = new Intent(MainActivity.this, UserHelp.class);
+                startActivity(intentHelp);
+                break;
+            case R.id.connect:
+                //Connect to bluetooth device
+                Intent intentConn = new Intent(MainActivity.this, SelectDeviceActivity.class);
+                startActivity(intentConn);
+                break;
+        }
+        return true;
     }
 
     /**
@@ -545,7 +534,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("Index", Integer.toString(index));
                             MainActivity.connectedThread.write(Integer.toString(index));
                         } else {
-                            String Comanda = null;
+                            String Comanda;
                             Comanda = "0" + index;
                             Log.e("Commmmm", Comanda);
                             MainActivity.connectedThread.write(Comanda);
@@ -588,7 +577,7 @@ public class MainActivity extends AppCompatActivity {
                     new InputStreamReader(in, StandardCharsets.UTF_8)
             );
 
-            String line="";
+            String line;
             try {
                 line = reader.readLine();
                 //Log.d("Line read", line);
