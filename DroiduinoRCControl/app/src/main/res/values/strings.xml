@@ -18,4 +18,7 @@
     <string name="description_get_dtc_number">Description get number of DTC\'s\n\nThis command will print out the number of emission related DTC.\n\nThe purpose is to select this command before reading the actual dtc\'s to know if we will have something to read.\n</string>
     <string name="read_dtc_description">Description Read DTC\'s\n\nThis command will read the emission related DTC\'s from your car and display them in a human readable mode.\n\nThis is done with the help of a integrated database of DTC\'s inside the app.\n</string>
     <string name="commands">Commands</string>
+    <string name="clear_dtc_description">Description clear DTC\'s\n\nThis command will clear all the emission related DTC\'s.\n\nKeep in mind that it also clears the MIL of the car and some calibration data.\n</string>
+    <string name="description_detect_protocol">Description detect protocol\n\nThis command will detect the protocol your car is using for diagnostics like CAN, KWP2000, J1850 VPW, J1850 PWM etc…\n</string>
+    <string name="description_get_battery_voltage">Description get battery voltage\n\nThis command will detect the current battery voltage with an accuracy up to +-2%, without additional calibration.\n </string>
 </resources>
