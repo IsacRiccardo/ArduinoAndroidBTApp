@@ -2,10 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/imageButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/background_color">
+    android:background="@color/background_color"
+    tools:context=".MainActivity">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -18,6 +19,36 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
+    <TextView
+        android:fontFamily="@font/work_sans_medium"
+        android:id="@+id/CommandsTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="@string/commands"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_upload"
+        android:focusable="true"
+        android:contentDescription="Upload"
+        tools:ignore="ContentDescription" />
+
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="0dp"
@@ -25,8 +56,8 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/DescriptionText"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -46,67 +77,64 @@
                     android:id="@+id/buttonDP"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="@string/detect_protocol" />
+                    android:fontFamily="@font/work_sans_medium"
+                    android:text="@string/detect_protocol"
+                    app:cornerRadius="15sp" />
 
                 <Button
                     android:id="@+id/buttonPID"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="@string/get_supported_pid_s" />
+                    android:text="@string/get_supported_pid_s"
+                    android:fontFamily="@font/work_sans_medium"
+                    app:cornerRadius="15sp"/>
 
                 <Button
                     android:id="@+id/buttonDtcNumber"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="@string/get_dtc_number" />
+                    android:text="@string/get_dtc_number"
+                    android:fontFamily="@font/work_sans_medium"
+                    app:cornerRadius="15sp"/>
 
                 <Button
                     android:id="@+id/buttonGetDTC"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="@string/get_dtc_codes" />
+                    android:text="@string/get_dtc_codes"
+                    android:fontFamily="@font/work_sans_medium"
+                    app:cornerRadius="15sp"/>
 
                 <Button
                     android:id="@+id/buttonClearDTC"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="@string/clear_dtc_s"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    android:fontFamily="@font/work_sans_medium"
+                    app:cornerRadius="15sp"/>
 
                 <Button
                     android:id="@+id/buttonBV"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="@string/battery_voltage"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="HardcodedText"
+                    android:fontFamily="@font/work_sans_medium"
+                    app:cornerRadius="15sp"/>
 
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
     </ScrollView>
 
-    <EditText
-        android:id="@+id/DescriptionText"
-        android:layout_width="0dp"
-        android:layout_height="49dp"
-        android:layout_marginStart="25dp"
-        android:ems="10"
-        android:fontFamily="sans-serif-black"
-        android:inputType="textPersonName"
-        android:tint="@color/colorPrimaryDark"
-        android:text="Errors Description"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton"
-        app:layout_constraintHorizontal_bias="0.078"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
+        android:fontFamily="@font/work_sans_medium"
         android:id="@+id/textView"
-
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
         android:fadeScrollbars="true"
         android:isScrollContainer="true"
         android:overScrollMode="ifContentScrolls"
@@ -121,40 +149,20 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        style="@style/Widget.AppCompat.ImageButton"
-        android:layout_width="95dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginBottom="5dp"
-        android:adjustViewBounds="true"
-        android:background="#70ED81"
-        android:cropToPadding="true"
-        android:rotation="0"
-        android:scaleType="centerInside"
-        android:tint="#050505"
+    <TextView
+        android:id="@+id/PrintPanelTitle"
+        android:fontFamily="@font/work_sans_medium"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="Description"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView1"
-        app:srcCompat="@android:drawable/ic_menu_upload" />
-
-    <EditText
-        android:id="@+id/Commands"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="15dp"
-        android:ems="10"
-        android:fontFamily="sans-serif-black"
-        android:inputType="textPersonName"
-        android:text="Commands"
-        android:tint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollView1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

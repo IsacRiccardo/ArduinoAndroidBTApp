@@ -19,20 +19,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDTCNumber;
     private Button btnGetDTC;
     private Button btnClearDTC;
-    private ImageButton SendToDB;
+    private FloatingActionButton SendToDB;
 
     private Button DetectProtocol;
     private Button BvButton;
@@ -87,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         //text
         text = findViewById(R.id.textView);
-        Dtext = findViewById(R.id.DescriptionText);
-        TextView Commands = findViewById(R.id.Commands);
+        Dtext = findViewById(R.id.PrintPanelTitle);
+        TextView Commands = findViewById(R.id.CommandsTitle);
         //buttons
         btnPID = findViewById(R.id.buttonPID);
         btnDTCNumber = findViewById(R.id.buttonDtcNumber);
         btnGetDTC = findViewById(R.id.buttonGetDTC);
-        SendToDB = findViewById(R.id.imageButton);
+        SendToDB = findViewById(R.id.floatingActionButton);
         BvButton = findViewById(R.id.buttonBV);
         btnClearDTC = findViewById(R.id.buttonClearDTC);
         DetectProtocol = findViewById(R.id.buttonDP);

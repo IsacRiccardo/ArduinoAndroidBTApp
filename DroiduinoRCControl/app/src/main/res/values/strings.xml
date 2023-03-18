@@ -9,4 +9,13 @@
     <string name="get_dtc_codes">GET DTC CODES</string>
     <string name="clear_dtc_s">CLEAR DTC\'S</string>
     <string name="battery_voltage">Battery Voltage</string>
+    <string name="help_for_user_to_understand_the_commands">Help for user to understand the commands</string>
+    <string name="description_pid">Description "Get Supported PID\'s"\n\nThis command will notify you about the supported diagnostic parameter id\'s in your car. This translates into real time data like: engine load, speed, coolant temperatures etc…\n
+    \nFunctionality:\n
+    1. Press the button -> The supported PID\'s will be printed in hexadecimal form.\n
+    2. Press and hold (After initial press) -> Important real time data will be printed.\n
+    </string>
+    <string name="description_get_dtc_number">Description get number of DTC\'s\n\nThis command will print out the number of emission related DTC.\n\nThe purpose is to select this command before reading the actual dtc\'s to know if we will have something to read.\n</string>
+    <string name="read_dtc_description">Description Read DTC\'s\n\nThis command will read the emission related DTC\'s from your car and display them in a human readable mode.\n\nThis is done with the help of a integrated database of DTC\'s inside the app.\n</string>
+    <string name="commands">Commands</string>
 </resources>

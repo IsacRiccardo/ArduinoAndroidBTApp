@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:type="linear"
+        android:angle="0"
+        android:startColor="@color/cardview_color_orange"
+        android:endColor="@color/cardview_color_orange_light">
+    </gradient>
+</shape>
