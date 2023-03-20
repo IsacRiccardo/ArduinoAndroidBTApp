@@ -7,9 +7,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionOverflowButtonStyle">@style/ThreeDotColor</item>
+        <item name="popupMenuBackground">@drawable/background_popup_menu</item>
     </style>
-    
+
     <style name="ThreeDotColor" parent="Widget.AppCompat.Light.ActionButton.Overflow">
         <item name="tint">#FFFFFF</item>
     </style>
+
 </resources>

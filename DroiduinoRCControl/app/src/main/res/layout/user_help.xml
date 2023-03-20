@@ -23,22 +23,64 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-
-            <TextView
-                android:id="@+id/DescriptionCommand1"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/gradient_blue"
-                android:fontFamily="@font/work_sans_medium"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/description_pid"
-                android:textAlignment="textStart"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/DescriptionCommand1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/gradient_blue"
+                                android:fontFamily="@font/work_sans_medium"
+                                android:paddingStart="10dp"
+                                android:paddingTop="10dp"
+                                android:paddingEnd="10dp"
+                                android:paddingBottom="10dp"
+                                android:text="@string/description_pid"
+                                android:textAlignment="textStart"
+                                android:textAllCaps="false"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="16sp" />
+
+                        <ImageButton
+                            android:id="@+id/show_more"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/gradient_blue"
+                            android:contentDescription="@string/show_more_details"
+                            android:onClick="showmore"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/baseline_keyboard_arrow_down_24"
+                            android:tint="@color/colorPrimaryDark" />
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:id="@+id/expandable_view">
+
+                        <TextView
+                            android:id="@+id/pid_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/gradient_blue"
+                            android:text="@string/pid_desc"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/work_sans_medium"/>
+
+                    </LinearLayout>
+
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView

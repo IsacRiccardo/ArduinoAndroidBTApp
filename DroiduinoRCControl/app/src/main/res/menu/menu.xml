@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/help"
-        android:title="@string/help">
-
+        android:title="@string/help"
+        android:icon="@drawable/baseline_help_24">
     </item>
     <item android:id="@+id/connect"
-        android:title="@string/connect">
-
+        android:title="@string/connect"
+        android:icon="@drawable/baseline_bluetooth_connected_24">
     </item>
 </menu>
