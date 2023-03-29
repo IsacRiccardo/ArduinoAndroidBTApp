@@ -66,7 +66,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/layout1">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
@@ -79,7 +80,7 @@
                     android:layout_height="60dp"
                     android:fontFamily="@font/work_sans_medium"
                     android:text="@string/detect_protocol"
-                    app:cornerRadius="15sp" />
+                    app:cornerRadius="10sp" />
 
                 <Button
                     android:id="@+id/buttonPID"
@@ -87,7 +88,7 @@
                     android:layout_height="60dp"
                     android:text="@string/get_supported_pid_s"
                     android:fontFamily="@font/work_sans_medium"
-                    app:cornerRadius="15sp"/>
+                    app:cornerRadius="10sp"/>
 
                 <Button
                     android:id="@+id/buttonDtcNumber"
@@ -95,7 +96,7 @@
                     android:layout_height="60dp"
                     android:text="@string/get_dtc_number"
                     android:fontFamily="@font/work_sans_medium"
-                    app:cornerRadius="15sp"/>
+                    app:cornerRadius="10sp"/>
 
                 <Button
                     android:id="@+id/buttonGetDTC"
@@ -103,7 +104,7 @@
                     android:layout_height="60dp"
                     android:text="@string/get_dtc_codes"
                     android:fontFamily="@font/work_sans_medium"
-                    app:cornerRadius="15sp"/>
+                    app:cornerRadius="10sp"/>
 
                 <Button
                     android:id="@+id/buttonClearDTC"
@@ -112,7 +113,7 @@
                     android:text="@string/clear_dtc_s"
                     tools:ignore="HardcodedText"
                     android:fontFamily="@font/work_sans_medium"
-                    app:cornerRadius="15sp"/>
+                    app:cornerRadius="10sp"/>
 
                 <Button
                     android:id="@+id/buttonBV"
@@ -121,7 +122,16 @@
                     android:text="@string/battery_voltage"
                     tools:ignore="HardcodedText"
                     android:fontFamily="@font/work_sans_medium"
-                    app:cornerRadius="15sp"/>
+                    app:cornerRadius="10sp"/>
+
+                <Button
+                    android:id="@+id/buttonConsole"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Console"
+                    tools:ignore="HardcodedText"
+                    android:fontFamily="@font/work_sans_medium"
+                    app:cornerRadius="10sp"/>
 
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>

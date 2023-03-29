@@ -1,2 +1,2 @@
-rootProject.name='Droiduino RC Control'
+rootProject.name='BlueTooth Diagnostics'
 include ':app'

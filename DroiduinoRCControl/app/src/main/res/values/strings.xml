@@ -24,4 +24,8 @@
     <string name="show_more">Show more</string>
     <string name="show_more_details">Show more details</string>
     <string name="pid_desc">PID\'s Description presented in Hexadecimal\n\n02 - Freeze DTC\n03 - Fuel System Status\n04 - Engine Load\n05-Engine Coolant Temperature\n06 - Short term fuel trim-Bank 1\n07 - Long term fuel trim—Bank 1\n08 - Short term fuel trim—Bank 2\n09 - Long term fuel trim—Bank 2\n0A - Fuel pressure\n0B - Intake manifold absolute pressure\n0C - Engine Speed\n0D - Vehicle Speed\n0E - Timing advance\nOF - Intake air temperature\n10 - Mass air flow sensor (MAF) air flow rate\n11 - Throttle position\n12 - Commanded secondary air status\n13 - Oxygen sensors present (in 2 banks)\n14 - Oxygen Sensor 1\n15 - Oxygen Sensor 2\n16 - Oxygen Sensor 3\n17 - Oxygen Sensor 4\n18 - Oxygen Sensor 5\n19 - Oxygen Sensor 6\n1A - Oxygen Sensor 7\n1B - Oxygen Sensor 8\n1C - OBD standards this vehicle conforms to\n1D - Oxygen sensors present (in 4 banks)\n1E - Auxiliary input status\n1F - Run time since engine start\n20 - PIDs supported [$21 - $40]\n</string>
+    <string name="console">CONSOLE</string>
+    <string name="insert_command">Insert command…</string>
+    <string name="send_command">Send Command</string>
+    <string name="cancel">Cancel</string>
 </resources>

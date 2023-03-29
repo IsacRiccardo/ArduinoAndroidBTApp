@@ -3,27 +3,37 @@ package com.droiduino.droiduinorccontrol;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
+import android.appwidget.AppWidgetHostView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 
@@ -56,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button DetectProtocol;
     private Button BvButton;
+    private Button ConsoleButton;
 
     private TextView text, Dtext;
 
@@ -75,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int CONNECTING_STATUS = 1; // used in bluetooth handler to identify message status
     private final static int MESSAGE_READ = 2; // used in bluetooth handler to identify message update
 
-    @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
+    @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId", "ObjectAnimatorBinding"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         BvButton = findViewById(R.id.buttonBV);
         btnClearDTC = findViewById(R.id.buttonClearDTC);
         DetectProtocol = findViewById(R.id.buttonDP);
+        ConsoleButton = findViewById(R.id.buttonConsole);
 
         //Disable buttons until BT connection is established
         btnPID.setEnabled(false);
@@ -106,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         BvButton.setEnabled(false);
         DetectProtocol.setEnabled(false);
         Commands.setEnabled(false);
+        ConsoleButton.setEnabled(false);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(Html.fromHtml("<font color=#FFFFFF>" + getString(R.string.app_name)+ "</font>"));
 
@@ -138,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     case CONNECTING_STATUS:
                         switch(msg.arg1) {
                             case 1:
+                                //if connected enable the commands interface
                                 Toast.makeText(MainActivity.this, "Device Connected", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                                 btnPID.setEnabled(true);
@@ -148,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                                 BvButton.setEnabled(true);
                                 DetectProtocol.setEnabled(true);
                                 text.setEnabled(true);
+                                ConsoleButton.setEnabled(true);
                                 text.setMovementMethod(new ScrollingMovementMethod());
                                 break;
                             case -1:
@@ -302,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                                 default:
                                     String str = arduinoMsg.substring("Positive Response".length());
                                     Log.d(TAG,str);
-                                    if(str.startsWith("4"))
+                                    if(str.startsWith("G"))
                                     {
                                         //Engine load
                                         int EngLoad;
@@ -314,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
                                         //Append the engine load to textview
                                         text.append("Engine Load: " + Math.round((float) EngLoad / 2.55) + "%\n");
 
-                                    }else if(str.startsWith("5"))
+                                    }else if(str.startsWith("H"))
                                     {
                                         //Coolant temperature
                                         int CoolantTemp;
@@ -335,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
                                             text.append("Normal temperature");
                                         }
 
-                                    }else if(str.startsWith("A"))
+                                    }else if(str.startsWith("I"))
                                     {
                                         //Fuel pressure
                                         int FuelPressure;
@@ -355,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
                                             text.append("Normal pressure");
                                         }
 
-                                    }else if(str.startsWith("C")) {
+                                    }else if(str.startsWith("L")) {
                                         //RPM
                                         int RPM_A,RPM_B;
                                         String hex = str.substring(1);
@@ -374,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                                         //Append the engine load to textview
                                         text.append("Engine speed: " + (256 * RPM_A + RPM_B) / 4 + " RPM\n");
 
-                                    }else if(str.startsWith("D")) {
+                                    }else if(str.startsWith("M")) {
                                         //Throttle Position
                                         int TP;
 
@@ -396,9 +411,6 @@ public class MainActivity extends AppCompatActivity {
                         else
                         {
                             Log.e("ArduinoMSG",arduinoMsg);
-                            String NS = "<font color=#ff0000>Negative Response</font>";
-                            text.append(Html.fromHtml(NS));
-                            text.append("\n");
                             text.append(arduinoMsg+"\n");
                         }
                         break;
@@ -406,14 +418,24 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+
         //Button for getting suppported PID's
         btnPID.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            btnPID.startAnimation(animation);
+
             //Sending the command
             CMD = 33;
-            connectedThread.write("33");
+            connectedThread.write("ff33");
         });
 
         btnPID.setOnLongClickListener(view -> {
+
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
+            btnPID.startAnimation(animation);
+
             //Set the textview
             text.setText("GENERAL INFO\n");
             text.append("Some PIDs may not be implemented!\n");
@@ -430,28 +452,41 @@ public class MainActivity extends AppCompatActivity {
 
         //Button for getting the DTC's number
         btnDTCNumber.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            btnDTCNumber.startAnimation(animation);
             //Sending the command
             CMD = 34;
-            connectedThread.write("34");
+            connectedThread.write("ff34");
         });
 
         //Button for getting the DTC codes
         btnGetDTC.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            btnGetDTC.startAnimation(animation);
             //Sending the command
             CMD = 35;
-            connectedThread.write("35");
+            connectedThread.write("ff35");
         });
 
         //Button for clearing the DTC codes
         btnClearDTC.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            btnClearDTC.startAnimation(animation);
             //TODO implement a warning
             //Sending the command
             CMD = 36;
-            connectedThread.write("36");
+            connectedThread.write("ff36");
         });
 
         //Button used for logging the response
         SendToDB.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
+            SendToDB.startAnimation(animation);
+
             if(!text.getText().toString().equals("The error description will appear here..."))
             {
                 if(text.length()>0) {
@@ -469,20 +504,74 @@ public class MainActivity extends AppCompatActivity {
         });
 
         BvButton.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            BvButton.startAnimation(animation);
             //Sending the command
             CMD = 37;
-            connectedThread.write("37");
+            connectedThread.write("ff37");
         });
 
         DetectProtocol.setOnClickListener(view -> {
+            //Animate button
+            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
+            DetectProtocol.startAnimation(animation);
             //Sending the command
             CMD = 38;
-            connectedThread.write("38");
+            connectedThread.write("ff38");
+        });
+
+        ConsoleButton.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            @SuppressLint("InflateParams")
+            View AlertView = getLayoutInflater().inflate(R.layout.alert_dialog,null);
+
+            final EditText command = (EditText) AlertView.findViewById(R.id.etCommand);
+            Button Send_c = (Button) AlertView.findViewById(R.id.btnSend);
+
+            builder.setView(AlertView);
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+
+            Send_c.setOnClickListener(view1 -> {
+                if(!command.getText().toString().isEmpty()) {
+                    String c_Text = command.getText().toString();
+                    switch (c_Text.length()) {
+                        case 1:
+                        case 3:
+                            Toast.makeText(MainActivity.this, "Invalid command", Toast.LENGTH_LONG).show();
+                            break;
+                        case 2:
+                            connectedThread.write("ff" + c_Text + '\n');
+                            break;
+                        case 4:
+                            connectedThread.write(c_Text + '\n');
+                            break;
+                        default:
+                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                }
+                else{
+                    Toast.makeText(MainActivity.this,"Please insert Command",Toast.LENGTH_SHORT).show();
+                }
+                dialog.cancel();
+            });
+
+
         });
     }
 
+    /**
+     * On create function for menu
+     * @param featureId
+     * @param menu
+     * @return
+     */
     @SuppressLint("RestrictedApi")
     @Override
+    //Menu creation override
     public boolean onCreatePanelMenu(int featureId, @NonNull Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
@@ -494,6 +583,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Describe what happens when a button from menu is clicked
+     * @param item
+     * @return
+     */
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -530,19 +624,17 @@ public class MainActivity extends AppCompatActivity {
                 if(SupportedPIDs[index] == 1)
                 {
                     //Filter the indexes we send, because not all supported indexes will be implemented in Arduino code
-                    //Current implemented indexes: 4, 5, 10, 12, 17
+                    //Current implemented indexes: 4, 5, 10, 12, 17 -> shifted with +10
                     if(index == 4 || index == 5 || index == 10 || index == 12 || index == 17) {
                         Log.e(TAG, String.valueOf(SupportedPIDs[index]));
                         SupportedPIDComm = true;
-                        if (index >= 10) {
-                            Log.e("Index", Integer.toString(index));
-                            MainActivity.connectedThread.write(Integer.toString(index));
-                        } else {
-                            String Comanda;
-                            Comanda = "0" + index;
-                            Log.e("Commmmm", Comanda);
-                            MainActivity.connectedThread.write(Comanda);
-                        }
+                        int Shifted_index = index + 10;
+
+                        String Comanda;
+                        Comanda = "ff" + Shifted_index;
+                        Log.e("Commmm", Comanda);
+                        MainActivity.connectedThread.write(Comanda);
+
                         //Put the thread to sleep because Arduino is not that fast
                         try {
                             Thread.sleep(900);
