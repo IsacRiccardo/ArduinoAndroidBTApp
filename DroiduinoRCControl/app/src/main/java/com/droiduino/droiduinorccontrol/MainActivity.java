@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         Dtext.setEnabled(false);
         btnClearDTC.setEnabled(false);
         SendToDB.setEnabled(false);
+        if(!SendToDB.isEnabled())
+            SendToDB.setVisibility(View.GONE);
         BvButton.setEnabled(false);
         DetectProtocol.setEnabled(false);
         Commands.setEnabled(false);
@@ -160,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
                                 btnClearDTC.setEnabled(true);
                                 SendToDB.setEnabled(true);
                                 BvButton.setEnabled(true);
+                                if(SendToDB.isEnabled())
+                                    SendToDB.setVisibility(View.VISIBLE);
                                 DetectProtocol.setEnabled(true);
                                 text.setEnabled(true);
                                 ConsoleButton.setEnabled(true);
@@ -168,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                             case -1:
                                 Toast.makeText(MainActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
+                                SendToDB.setVisibility(View.GONE);
                                 break;
                         }
                         break;
@@ -184,10 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if(arduinoMsg.contains("Positive Response"))
                         {
-                            String PS = "<font color=#04ff00>Positive Response</font>";
-
-                            text.append(Html.fromHtml(PS));
-                            text.append("\n");
+                            text.append(">Positive Response\n");
 
                             switch(CMD)
                             {
@@ -205,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
 
                                     if(text.length()==0)
                                     {
-                                        text.setText(">>Service 1 Supported PID's [01-20]:\n");
+                                        text.setText(">Service 1 Supported PID's [01-20]:\n");
                                     }else
-                                        text.append(">>Service 1 Supported PID's [01-20]:\n");
+                                        text.append(">Service 1 Supported PID's [01-20]:\n");
 
                                     int i = 0;
                                     text.append(">");
@@ -236,9 +238,9 @@ public class MainActivity extends AppCompatActivity {
                                     String RespData = arduinoMsg.substring("Positive Response".length());
 
                                     if(RespData.startsWith("1"))
-                                        text.append(">>Engine check light is ON\n");
+                                        text.append(">Engine check light is ON\n");
                                     else
-                                        text.append(">>Engine check light is OFF\n");
+                                        text.append(">Engine check light is OFF\n");
 
                                     text.append(">Number of DTC's: ");
                                     //Extract number of DTC from response
@@ -291,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                                     {
                                         String Voltage = BatteryVDesc.substring(1);
                                         Log.d("Battery Voltage", Voltage);
-                                        text.append("Battery Voltage: " + Voltage + "\n");
+                                        text.append(">Battery Voltage: " + Voltage + "\n");
                                     }
 
                                     //Reset command variable
@@ -306,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                                         String Protocol = ProtocolDesc.substring(1);
 
                                         Log.d("PROTOCOL", Protocol);
-                                        text.append("Protocol: " + Protocol + "\n");
+                                        text.append(">Protocol: " + Protocol + "\n");
                                     }
 
                                     //Reset command variable
@@ -327,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
                                         EngLoad = Integer.parseInt(hex.trim(), 16);
 
                                         //Append the engine load to textview
-                                        text.append("Engine Load: " + Math.round((float) EngLoad / 2.55) + "%\n");
+                                        text.append(">Engine Load: " + Math.round((float) EngLoad / 2.55) + "%\n");
 
                                     }else if(str.startsWith("H"))
                                     {
@@ -339,15 +341,13 @@ public class MainActivity extends AppCompatActivity {
                                         CoolantTemp = Integer.parseInt(hex.trim(), 16);
 
                                         //Append the engine load to textview
-                                        text.append("Coolant Temperature: " + (CoolantTemp - 40) + " Celsius\n");
+                                        text.append(">Coolant Temperature: " + (CoolantTemp - 40) + " Celsius\n");
 
-                                        //Offer a feedback to the user about the temperature
-                                        if(CoolantTemp-40 > 200)
+                                        //User feedback
+                                        if(CoolantTemp - 40 > 200)
                                         {
                                             String Warning ="<font color=#e69b00>Warning, high temperature</font>";
                                             text.append(Html.fromHtml(Warning));
-                                        }else{
-                                            text.append("Normal temperature");
                                         }
 
                                     }else if(str.startsWith("I"))
@@ -360,14 +360,13 @@ public class MainActivity extends AppCompatActivity {
                                         FuelPressure = Integer.parseInt(hex.trim(), 16);
 
                                         //Append the engine load to textview
-                                        text.append("Fuel pressure: " + Integer.toString(3*FuelPressure) + " kPa\n");
+                                        text.append(">Fuel pressure: " + Integer.toString(3*FuelPressure) + " kPa\n");
 
+                                        //User feedback
                                         if(3*FuelPressure > 600)
                                         {
                                             String Warning ="<font color=#e69b00>Warning, high fuel pressure</font>";
                                             text.append(Html.fromHtml(Warning));
-                                        }else{
-                                            text.append("Normal pressure");
                                         }
 
                                     }else if(str.startsWith("L")) {
@@ -387,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d(TAG,Hex_B);
 
                                         //Append the engine load to textview
-                                        text.append("Engine speed: " + (256 * RPM_A + RPM_B) / 4 + " RPM\n");
+                                        text.append(">Engine speed: " + (256 * RPM_A + RPM_B) / 4 + " RPM\n");
 
                                     }else if(str.startsWith("M")) {
                                         //Throttle Position
@@ -399,10 +398,10 @@ public class MainActivity extends AppCompatActivity {
                                         Log.d(TAG,Integer.toString(TP));
 
                                         //Append the engine load to textview
-                                        text.append("Throttle Position: " + (100 * TP) / 255 + "%\n");
+                                        text.append(">Throttle Position: " + (100 * TP) / 255 + "%\n");
 
                                     }else if(text.length()!=0)
-                                            text.append(str + "\n");
+                                            text.append(">" + str + "\n");
                                         break;
 
                             }
@@ -411,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
                         else
                         {
                             Log.e("ArduinoMSG",arduinoMsg);
-                            text.append(arduinoMsg+"\n");
+                            text.append(">" + arduinoMsg+"\n");
                         }
                         break;
                 }
@@ -487,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
             Animation animation = AnimationUtils.loadAnimation(this,R.anim.blink_anim);
             SendToDB.startAnimation(animation);
 
-            if(!text.getText().toString().equals("The error description will appear here..."))
+            if(!text.getText().toString().equals(">The error description will appear here..."))
             {
                 if(text.length()>0) {
                     //Log.i("TEXT",text.getText().toString());
@@ -613,7 +612,25 @@ public class MainActivity extends AppCompatActivity {
      */
     public class MyThread extends Thread {
         public void run(){
+
             Looper.prepare();//Call looper.prepare()
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    //Disable commands while thread is running
+                    btnPID.setEnabled(false);
+                    btnDTCNumber.setEnabled(false);
+                    btnGetDTC.setEnabled(false);
+                    Dtext.setEnabled(false);
+                    btnClearDTC.setEnabled(false);
+                    SendToDB.setVisibility(View.GONE);
+                    BvButton.setEnabled(false);
+                    DetectProtocol.setEnabled(false);
+                    ConsoleButton.setEnabled(false);
+                }
+            });
 
             //Variable to test if previous Get Supported PIDs command has been executed
             boolean SupportedPIDComm = false;
@@ -653,6 +670,23 @@ public class MainActivity extends AppCompatActivity {
             //All the commands have been transmitted, reset the PID variable
             //The textview can be cleared when a new request is sent
             PID=false;
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    //Enable commands while thread is running
+                    btnPID.setEnabled(true);
+                    btnDTCNumber.setEnabled(true);
+                    btnGetDTC.setEnabled(true);
+                    Dtext.setEnabled(true);
+                    btnClearDTC.setEnabled(true);
+                    SendToDB.setVisibility(View.VISIBLE);
+                    BvButton.setEnabled(true);
+                    DetectProtocol.setEnabled(true);
+                    ConsoleButton.setEnabled(true);
+                }
+            });
 
             Log.d("Array", Arrays.toString(SupportedPIDs));
             Looper.loop();//Call looper.prepare()

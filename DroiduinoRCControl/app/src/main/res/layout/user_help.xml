@@ -26,7 +26,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@color/colorPrimarylight">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -36,7 +37,6 @@
                                 android:id="@+id/DescriptionCommand1"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="@drawable/gradient_blue"
                                 android:fontFamily="@font/work_sans_medium"
                                 android:paddingStart="10dp"
                                 android:paddingTop="10dp"
@@ -53,32 +53,38 @@
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
                             android:layout_gravity="center"
-                            android:background="@drawable/gradient_blue"
+                            android:background="@color/colorPrimarylight"
                             android:contentDescription="@string/show_more_details"
-                            android:onClick="showmore"
+                            android:onClick="showmore_PID"
                             android:scaleType="fitCenter"
                             android:src="@drawable/baseline_keyboard_arrow_down_24"
                             android:tint="@color/colorPrimaryDark" />
 
                     </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:id="@+id/expandable_view">
-
-                        <TextView
-                            android:id="@+id/pid_desc"
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandable_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:el_duration="800"
+                    app:el_expanded="false"
+                    app:el_parallax="0.5">
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/gradient_blue"
-                            android:text="@string/pid_desc"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorPrimaryDark"
-                            android:textSize="16sp"
-                            android:fontFamily="@font/work_sans_medium"/>
+                            android:layout_height="wrap_content">
 
-                    </LinearLayout>
+                            <TextView
+                                android:id="@+id/pid_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="@string/pid_desc"
+                                android:textAlignment="textStart"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="16sp"
+                                android:fontFamily="@font/work_sans_medium"/>
+
+                        </LinearLayout>
+                </net.cachapa.expandablelayout.ExpandableLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -95,21 +101,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView1">
 
-            <TextView
-                android:id="@+id/DescriptionCommand2"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_orange"
-                android:fontFamily="@font/work_sans_medium"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/description_get_dtc_number"
-                android:textAlignment="viewStart"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp" />
+                android:orientation="vertical"
+                android:background="@color/cardview_color_orange">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/DescriptionCommand2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans_medium"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/title_get_dtcnb"
+                        android:textAlignment="viewStart"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/show_more_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:background="@drawable/gradient_orange"
+                        android:contentDescription="@string/show_more_details"
+                        android:onClick="showmore_DTC_Number"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_keyboard_arrow_down_24" />
+                </LinearLayout>
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandable_view_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:el_duration="800"
+                    app:el_expanded="false"
+                    app:el_parallax="0.5">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/desc_get_dtc_number"
+                            android:paddingTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/description_get_dtc_number"
+                            android:textAlignment="textStart"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/work_sans_medium"/>
+
+                    </LinearLayout>
+                </net.cachapa.expandablelayout.ExpandableLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -124,20 +178,67 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
-            <TextView
-                android:id="@+id/DescriptionCommand3"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_green"
-                android:fontFamily="@font/work_sans_medium"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/read_dtc_description"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp" />
+                android:orientation="vertical"
+                android:background="@color/cardview_color_green">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/DescriptionCommand3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans_medium"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/title_read_dtc"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/show_more_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="78dp"
+                        android:layout_gravity="end"
+                        android:background="@drawable/gradient_green"
+                        android:contentDescription="@string/show_more_details"
+                        android:onClick="showmore_get_dtc"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_keyboard_arrow_down_24" />
+                </LinearLayout>
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandable_view_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:el_duration="800"
+                    app:el_expanded="false"
+                    app:el_parallax="0.5">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/desc_get_dtc"
+                            android:paddingTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/description_get_dtc_number"
+                            android:textAlignment="textStart"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/work_sans_medium"/>
+
+                    </LinearLayout>
+                </net.cachapa.expandablelayout.ExpandableLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -152,19 +253,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView3">
 
-            <TextView
-                android:id="@+id/DescriptionCommand4"
-                android:background="@drawable/gradient_yellow"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/work_sans_medium"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/clear_dtc_description"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"/>
+                android:orientation="vertical"
+                android:background="@color/cardview_color_yellow">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/DescriptionCommand4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans_medium"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/title_clear_dtc"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"/>
+
+                    <ImageButton
+                        android:id="@+id/show_more_4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:background="@drawable/gradient_yellow"
+                        android:contentDescription="@string/show_more_details"
+                        android:onClick="showmore_clear_dtc"
+                        android:layout_marginStart="74dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_keyboard_arrow_down_24" />
+                </LinearLayout>
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandable_view_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:el_duration="800"
+                    app:el_expanded="false"
+                    app:el_parallax="0.5">
+                        <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/desc_clear_dtc"
+                            android:paddingTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/clear_dtc_description"
+                            android:textAlignment="textStart"
+                            android:padding="10dp"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/work_sans_medium"/>
+
+                    </LinearLayout>
+                </net.cachapa.expandablelayout.ExpandableLayout>
+
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -179,19 +330,68 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView4">
 
-            <TextView
-                android:id="@+id/DescriptionCommand5"
-                android:background="@drawable/gradient_blue"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/work_sans_medium"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/description_detect_protocol"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"/>
+                android:orientation="vertical"
+                android:background="@color/colorPrimarylight">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/DescriptionCommand5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans_medium"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/title_detect_protocol"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"/>
+
+                    <ImageButton
+                        android:id="@+id/show_more_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:layout_marginStart="40dp"
+                        android:background="@drawable/gradient_blue"
+                        android:contentDescription="@string/show_more_details"
+                        android:onClick="showmore_DP"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_keyboard_arrow_down_24" />
+                </LinearLayout>
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandable_view_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:el_duration="800"
+                    app:el_expanded="false"
+                    app:el_parallax="0.5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/desc_detect_protocol"
+                        android:paddingTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/description_detect_protocol"
+                        android:textAlignment="textStart"
+                        android:padding="10dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/work_sans_medium"/>
+
+                </LinearLayout>
+                </net.cachapa.expandablelayout.ExpandableLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -206,19 +406,67 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView5">
 
-            <TextView
-                android:id="@+id/DescriptionCommand6"
-                android:background="@drawable/gradient_orange"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/work_sans_medium"
-                android:paddingStart="10dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/description_get_battery_voltage"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="16sp"/>
+                android:orientation="vertical"
+                android:background="@color/cardview_color_orange">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/DescriptionCommand6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/work_sans_medium"
+                        android:paddingStart="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/title_get_battery_voltage"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"/>
+
+                    <ImageButton
+                        android:id="@+id/show_more_6"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:background="@drawable/gradient_orange"
+                        android:contentDescription="@string/show_more_details"
+                        android:layout_marginStart="14dp"
+                        android:onClick="showmore_DV"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_keyboard_arrow_down_24" />
+                </LinearLayout>
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandable_view_6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:el_duration="800"
+                    app:el_expanded="false"
+                    app:el_parallax="0.5">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/desc_detect_voltage"
+                        android:paddingTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/description_get_battery_voltage"
+                        android:textAlignment="textStart"
+                        android:padding="10dp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/work_sans_medium"/>
+
+                </LinearLayout>
+                </net.cachapa.expandablelayout.ExpandableLayout>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@
     <color name="colorPrimary">#1B03F4</color>
     <color name="colorPrimarylight">#2396F1</color>
     <color name="colorPrimaryDark">#000000</color>
+    <color name="console">#121111</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorGrayed">#FF636262</color>
     <color name="white">#FFFFFF</color>

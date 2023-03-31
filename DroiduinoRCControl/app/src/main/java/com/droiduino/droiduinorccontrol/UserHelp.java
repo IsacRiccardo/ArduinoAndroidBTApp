@@ -1,5 +1,6 @@
 package com.droiduino.droiduinorccontrol;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -20,9 +21,13 @@ import androidx.cardview.widget.CardView;
 
 import com.google.api.Distribution;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import org.apache.commons.collections4.Get;
 
 import java.util.Objects;
+
+import io.grpc.ExperimentalApi;
 
 public class UserHelp extends AppCompatActivity {
 
@@ -33,18 +38,61 @@ public class UserHelp extends AppCompatActivity {
     public TextView GetProtocol;
     public TextView GetVoltage;
     public TextView PIDdesc;
-    public LinearLayout expandable_view;
-    public ImageButton text_show_more_less;
 
+    //Cardview variables for first command
+    public ExpandableLayout expandable_view;
+    public ImageButton text_show_more_less;
     public CardView cardView;
+
+    //Cardview variables for second command
+    public ExpandableLayout expandable_view_2;
+    public ImageButton text_show_more_less_2;
+    public CardView cardView_2;
+
+    //Cardview variables for third command
+    public ExpandableLayout expandable_view_3;
+    public ImageButton text_show_more_less_3;
+    public CardView cardView_3;
+
+    //Cardview variables for fourth command
+    public ExpandableLayout expandable_view_4;
+    public ImageButton text_show_more_less_4;
+    public CardView cardView_4;
+
+    //Cardview variables for fifth command
+    public ExpandableLayout expandable_view_5;
+    public ImageButton text_show_more_less_5;
+    public CardView cardView_5;
+
+    //Cardview variables for sixth command
+    public ExpandableLayout expandable_view_6;
+    public ImageButton text_show_more_less_6;
+    public CardView cardView_6;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_help);
 
+        //PID's
         expandable_view = findViewById(R.id.expandable_view);
         text_show_more_less = findViewById(R.id.show_more);
-        cardView = findViewById(R.id.cardView1);
+
+        //DTC number
+        expandable_view_2 = findViewById(R.id.expandable_view_2);
+        text_show_more_less_2 = findViewById(R.id.show_more_2);
+        //Read DTC
+        expandable_view_3 = findViewById(R.id.expandable_view_3);
+        text_show_more_less_3 = findViewById(R.id.show_more_3);
+        //Clear DTC
+        expandable_view_4 = findViewById(R.id.expandable_view_4);
+        text_show_more_less_4 = findViewById(R.id.show_more_4);
+        //Detect protocol
+        expandable_view_5 = findViewById(R.id.expandable_view_5);
+        text_show_more_less_5 = findViewById(R.id.show_more_5);
+        //Detect voltage
+        expandable_view_6 = findViewById(R.id.expandable_view_6);
+        text_show_more_less_6 = findViewById(R.id.show_more_6);
 
         //Set color title to white
         Objects.requireNonNull(getSupportActionBar()).setTitle(Html.fromHtml("<font color=#FFFFFF>" + getString(R.string.app_name)+ "</font>"));
@@ -67,12 +115,12 @@ public class UserHelp extends AppCompatActivity {
         SpannableString ss_PIDdesc = new SpannableString(PIDdesc.getText());
 
         StyleSpan bold = new StyleSpan(Typeface.BOLD);
-        ss_PID.setSpan(bold,0, "Description  Get Supported PID's".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss_PID.setSpan(bold,0, "Description  get Supported PID's".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_DTCnb.setSpan(bold,0,"Description get number of DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss_DTC.setSpan(bold,0,"Description Read DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss_DTC.setSpan(bold,0,"Description read DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_Cleardtc.setSpan(bold,0,"Description clear DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_Protocol.setSpan(bold,0,"Description detect protocol".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss_Voltage.setSpan(bold,0,"Description get battery voltage".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss_Voltage.setSpan(bold,0,27,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_PIDdesc.setSpan(bold,0,"PID's Description presented in Hexadecimal".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         //Apply the modified text to textview
@@ -86,16 +134,70 @@ public class UserHelp extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void showmore (View view) {
-        if(expandable_view.getVisibility()== View.GONE)
+    public void showmore_PID (View view) {
+        if(!expandable_view.isExpanded())
         {
             text_show_more_less.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
-            TransitionManager.beginDelayedTransition(cardView,new AutoTransition());
-            expandable_view.setVisibility(View.VISIBLE);
+            expandable_view.expand();
         }else{
             text_show_more_less.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);;
-            TransitionManager.beginDelayedTransition(cardView,new AutoTransition());
-            expandable_view.setVisibility(View.GONE);
+            expandable_view.collapse();
+        }
+    }
+    @SuppressLint("SetTextI18n")
+    public void showmore_DTC_Number (View view) {
+        if(!expandable_view_2.isExpanded())
+        {
+            text_show_more_less_2.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
+            expandable_view_2.expand();
+        }else{
+            text_show_more_less_2.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);;
+            expandable_view_2.collapse();
+        }
+
+    }
+
+    public void showmore_get_dtc(View view) {
+        if(!expandable_view_3.isExpanded())
+        {
+            text_show_more_less_3.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
+            expandable_view_3.expand();
+        }else{
+            text_show_more_less_3.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);;
+            expandable_view_3.collapse();
+        }
+    }
+
+    public void showmore_clear_dtc(View view) {
+        if(!expandable_view_4.isExpanded())
+        {
+            text_show_more_less_4.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
+            expandable_view_4.expand();
+        }else{
+            text_show_more_less_4.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);;
+            expandable_view_4.collapse();
+        }
+    }
+
+    public void showmore_DP(View view) {
+        if(!expandable_view_5.isExpanded())
+        {
+            text_show_more_less_5.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
+            expandable_view_5.expand();
+        }else{
+            text_show_more_less_5.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);;
+            expandable_view_5.collapse();
+        }
+    }
+
+    public void showmore_DV(View view) {
+        if(!expandable_view_6.isExpanded())
+        {
+            text_show_more_less_6.setImageResource(R.drawable.baseline_keyboard_arrow_up_24);
+            expandable_view_6.expand();
+        }else{
+            text_show_more_less_6.setImageResource(R.drawable.baseline_keyboard_arrow_down_24);;
+            expandable_view_6.collapse();
         }
     }
 }

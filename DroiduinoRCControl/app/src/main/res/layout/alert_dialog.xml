@@ -16,7 +16,24 @@
         android:layout_marginTop="10dp"
         android:text="@string/console"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="@font/work_sans_medium"/>
+
+    <TextView
+        android:id="@+id/DescAlertDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/work_sans_medium"
+        android:text="@string/alert_dialog_desc"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16sp" />
 
     <EditText
         android:id="@+id/etCommand"
@@ -29,21 +46,23 @@
         android:ems="10"
         android:hint="@string/insert_command"
         android:inputType="number"
-        android:maxLength="4" />
+        android:maxLength="4"
+        android:fontFamily="@font/work_sans_medium"/>
 
     <Button
         android:id="@+id/btnSend"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:fontFamily="@font/work_sans_medium"
         android:gravity="center"
         android:text="@string/send_command"
         android:textColor="@android:color/white"
-        android:fontFamily="@font/work_sans_medium"
-        app:cornerRadius="10dp"/>
+        android:textSize="16sp"
+        app:cornerRadius="10dp" />
 
 </LinearLayout>
