@@ -42,6 +42,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -289,11 +291,48 @@ public class MainActivity extends AppCompatActivity {
                                 case 37:
                                     String BatteryVDesc = arduinoMsg.substring("Positive Response".length());
 
+                                    // If VoltageDesc starts with "V" we know that a command for getting the voltage has been sent
+                                    // BatteryDesc will be: V + Voltage Value + V
                                     if(BatteryVDesc.startsWith("V"))
                                     {
+                                        //Get the voltage value plus unit of measure
                                         String Voltage = BatteryVDesc.substring(1);
+
+                                        //Processing the response
+
+                                        //Get index where the unit of measure is
+                                        int um_index = Voltage.indexOf("V");
+
+                                        //Verify is the unit of measure is present
+                                        if(Voltage.contains("V"))
+                                        {
+                                            //Get only voltage value
+                                            String Voltage_Value = Voltage.substring(0,um_index);
+                                            Log.i("Value",Voltage_Value);
+
+                                            int dot_index = Voltage_Value.indexOf(".");
+
+                                            //Separate whole from decimal
+                                            String whole_part = Voltage_Value.substring(0,dot_index);
+                                            String decimal_part = Voltage_Value.substring(dot_index+1,um_index);
+                                            Log.i("Whole part",whole_part);
+                                            Log.i("Decimal part",decimal_part);
+
+                                            //Verify the validity of the values
+                                            if(StringUtils.isNumeric(whole_part) && StringUtils.isNumeric(decimal_part))
+                                            {
+                                                text.append(">Battery Voltage: " + Voltage + "\n");
+                                            }
+                                            else{
+                                                text.append(">Try again, the value received was not numerical\n");
+                                                text.append(">Caused by the OBD2 module\n");
+                                            }
+                                        }
+                                        else{
+                                            text.append("Format error, try again\n");
+                                        }
                                         Log.d("Battery Voltage", Voltage);
-                                        text.append(">Battery Voltage: " + Voltage + "\n");
+
                                     }
 
                                     //Reset command variable
@@ -303,9 +342,11 @@ public class MainActivity extends AppCompatActivity {
                                 case 38:
                                     String ProtocolDesc = arduinoMsg.substring("Positive Response".length());
 
+                                    //If ProtocolDesc starts with "P" we know that a command for getting the protocol has been sent
+                                    //ProtocolDesc will be: P + Protocol
                                     if(ProtocolDesc.startsWith("P"))
                                     {
-                                        String Protocol = ProtocolDesc.substring(1);
+                                        String Protocol = ProtocolDesc.substring(6);
 
                                         Log.d("PROTOCOL", Protocol);
                                         text.append(">Protocol: " + Protocol + "\n");
@@ -420,10 +461,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Button for getting suppported PID's
         btnPID.setOnClickListener(view -> {
-            //Animate button
-            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-            btnPID.startAnimation(animation);
-
             //Sending the command
             CMD = 33;
             connectedThread.write("ff33");
@@ -451,9 +488,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Button for getting the DTC's number
         btnDTCNumber.setOnClickListener(view -> {
-            //Animate button
-            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-            btnDTCNumber.startAnimation(animation);
             //Sending the command
             CMD = 34;
             connectedThread.write("ff34");
@@ -461,9 +495,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Button for getting the DTC codes
         btnGetDTC.setOnClickListener(view -> {
-            //Animate button
-            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-            btnGetDTC.startAnimation(animation);
             //Sending the command
             CMD = 35;
             connectedThread.write("ff35");
@@ -471,13 +502,27 @@ public class MainActivity extends AppCompatActivity {
 
         //Button for clearing the DTC codes
         btnClearDTC.setOnClickListener(view -> {
-            //Animate button
-            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-            btnClearDTC.startAnimation(animation);
             //TODO implement a warning
-            //Sending the command
-            CMD = 36;
-            connectedThread.write("ff36");
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("CLEAR DTC'S")
+                    .setMessage("Are you sure you want to delete the Diagnostic Trouble Codes?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                            //Sending the command
+                            CMD = 36;
+                            connectedThread.write("ff36");
+                        }
+                    })
+
+                    // A null listener allows the button to dismiss the dialog and take no further action.
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setIcon(R.drawable.baseline_warning_amber_24)
+                    .show();
+
         });
 
         //Button used for logging the response
@@ -503,18 +548,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         BvButton.setOnClickListener(view -> {
-            //Animate button
-            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-            BvButton.startAnimation(animation);
             //Sending the command
             CMD = 37;
             connectedThread.write("ff37");
         });
 
         DetectProtocol.setOnClickListener(view -> {
-            //Animate button
-            Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
-            DetectProtocol.startAnimation(animation);
             //Sending the command
             CMD = 38;
             connectedThread.write("ff38");
@@ -670,6 +709,13 @@ public class MainActivity extends AppCompatActivity {
             //All the commands have been transmitted, reset the PID variable
             //The textview can be cleared when a new request is sent
             PID=false;
+
+            //Put the thread to sleep because Arduino is not that fast
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             runOnUiThread(new Runnable() {
                 @Override
