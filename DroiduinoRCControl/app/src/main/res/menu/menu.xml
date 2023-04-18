@@ -8,4 +8,8 @@
         android:title="@string/connect"
         android:icon="@drawable/baseline_bluetooth_connected_24">
     </item>
+    <item android:id="@+id/contact"
+        android:title="@string/contact"
+        android:icon="@drawable/baseline_contact_page_24">
+    </item>
 </menu>

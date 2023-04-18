@@ -11,7 +11,7 @@
     <color name="cardview_color_green">#4CAF50</color>
     <color name="cardview_color_green_light">#90D393</color>
     <color name="cardview_color_orange">#FF9800</color>
-    <color name="cardview_color_orange_light">#CFA86E</color>
+    <color name="cardview_color_orange_light">#ECCEA2</color>
     <color name="cardview_color_yellow">#F3DB0C</color>
     <color name="cardview_color_yellow_light">#E6DA6F</color>
 </resources>

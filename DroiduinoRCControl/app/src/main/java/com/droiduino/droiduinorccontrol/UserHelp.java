@@ -1,6 +1,5 @@
 package com.droiduino.droiduinorccontrol;
 
-import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -8,26 +7,16 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
-import com.google.api.Distribution;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.apache.commons.collections4.Get;
-
 import java.util.Objects;
-
-import io.grpc.ExperimentalApi;
 
 public class UserHelp extends AppCompatActivity {
 
@@ -42,32 +31,26 @@ public class UserHelp extends AppCompatActivity {
     //Cardview variables for first command
     public ExpandableLayout expandable_view;
     public ImageButton text_show_more_less;
-    public CardView cardView;
 
     //Cardview variables for second command
     public ExpandableLayout expandable_view_2;
     public ImageButton text_show_more_less_2;
-    public CardView cardView_2;
 
     //Cardview variables for third command
     public ExpandableLayout expandable_view_3;
     public ImageButton text_show_more_less_3;
-    public CardView cardView_3;
 
     //Cardview variables for fourth command
     public ExpandableLayout expandable_view_4;
     public ImageButton text_show_more_less_4;
-    public CardView cardView_4;
 
     //Cardview variables for fifth command
     public ExpandableLayout expandable_view_5;
     public ImageButton text_show_more_less_5;
-    public CardView cardView_5;
 
     //Cardview variables for sixth command
     public ExpandableLayout expandable_view_6;
     public ImageButton text_show_more_less_6;
-    public CardView cardView_6;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,7 +78,7 @@ public class UserHelp extends AppCompatActivity {
         text_show_more_less_6 = findViewById(R.id.show_more_6);
 
         //Set color title to white
-        Objects.requireNonNull(getSupportActionBar()).setTitle(Html.fromHtml("<font color=#FFFFFF>" + getString(R.string.app_name)+ "</font>"));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(Html.fromHtml("<font color=#FFFFFF>" + "User Help"+ "</font>"));
 
         //Get the id's of the targeted textview's
         SupportedPIDs = findViewById(R.id.DescriptionCommand1);
@@ -115,7 +98,7 @@ public class UserHelp extends AppCompatActivity {
         SpannableString ss_PIDdesc = new SpannableString(PIDdesc.getText());
 
         StyleSpan bold = new StyleSpan(Typeface.BOLD);
-        ss_PID.setSpan(bold,0, "Description  get Supported PID's".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss_PID.setSpan(bold,0, "Description  get Supported Subfunctions".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_DTCnb.setSpan(bold,0,"Description get number of DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_DTC.setSpan(bold,0,"Description read DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         ss_Cleardtc.setSpan(bold,0,"Description clear DTC's".length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -3,7 +3,6 @@ package com.droiduino.droiduinorccontrol;
 import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
-import android.appwidget.AppWidgetHostView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -16,8 +15,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -180,7 +177,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
 
                     case MESSAGE_READ:
-                        //clearing the textview if PID is false
+                        //Clearing the textview if PID is false
+                        //If PID is 1 than do not clear it because information about subfunctions must be displayed
                         if(!PID)
                             text.setText("");
                         else
@@ -189,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
                         // Read message from Arduino
                         String arduinoMsg = msg.obj.toString();
 
+                        //If message starts with positive response than begin processing all the response,
+                        //based on what command has been sent
                         if(arduinoMsg.contains("Positive Response"))
                         {
                             text.append(">Positive Response\n");
@@ -209,27 +209,151 @@ public class MainActivity extends AppCompatActivity {
 
                                     if(text.length()==0)
                                     {
-                                        text.setText(">Service 1 Supported PID's [01-20]:\n");
+                                        text.setText(">Service 1 Supported Subfunctions:\n");
                                     }else
-                                        text.append(">Service 1 Supported PID's [01-20]:\n");
+                                        text.append(">Service 1 Supported Subfunctions:\n");
 
                                     int i = 0;
-                                    text.append(">");
 
-                                    //iterate through the array of tokens and print the supported PID in HEX format
+                                    //Iterate through the array of tokens
                                     while(i<tokens.length - 1){
                                         //Log.d("INT",Integer.valueOf(tokens[i]).toString());
 
-                                        //insert into string the supported PID's
+                                        //At the position of the supported PID we set the value to 1
+                                        //We make a vector of appearances
                                         SupportedPIDs[Integer.parseInt(tokens[i])] = 1;
 
-                                        //convert the value to hex
-                                        String HexValue = Integer.toHexString(Integer.parseInt(tokens[i]));
-                                        //Log.d("HEX",HexValue);
-                                        text.append(HexValue + " ");
                                         i++;
                                     }
+
+                                    int j=1;
+
+                                    //Iterate through the vector of appearances and set the textview
+                                    while(j<SupportedPIDs.length)
+                                    {
+                                        if(SupportedPIDs[j]==1)
+                                        {
+                                            switch (j)
+                                            {
+                                                case 1:
+                                                    text.append("\n>Monitor status since DTCs cleared.\n");
+                                                    break;
+                                                case 2:
+                                                    text.append("\n>DTC that caused freeze frame to be stored.\n");
+                                                    break;
+                                                case 3:
+                                                    text.append("\n>Fuel system status.\n");
+                                                    break;
+                                                case 4:
+                                                    text.append("\n>Calculated engine load.\n");
+                                                    break;
+                                                case 5:
+                                                    text.append("\n>Engine coolant temperature.\n");
+                                                    break;
+                                                case 6:
+                                                    text.append("\n>Short term fuel trim—Bank 1.\n");
+                                                    break;
+                                                case 7:
+                                                    text.append("\n>Long term fuel trim—Bank 1.\n");
+                                                    break;
+                                                case 8:
+                                                    text.append("\n>Short term fuel trim—Bank 2.\n");
+                                                    break;
+                                                case 9:
+                                                    text.append("\n>Long term fuel trim—Bank 2.\n");
+                                                    break;
+                                                case 10:
+                                                    text.append("\n>Fuel pressure.\n");
+                                                    break;
+                                                case 11:
+                                                    text.append("\n>Intake manifold absolute pressure.\n");
+                                                    break;
+                                                case 12:
+                                                    text.append("\n>Engine speed.\n");
+                                                    break;
+                                                case 13:
+                                                    text.append("\n>Vehicle speed.\n");
+                                                    break;
+                                                case 14:
+                                                    text.append("\n>Timing advance.\n");
+                                                    break;
+                                                case 15:
+                                                    text.append("\n>Intake air temperature.\n");
+                                                    break;
+                                                case 16:
+                                                    text.append("\n>Mass air flow sensor (MAF) air flow rate.\n");
+                                                    break;
+                                                case 17:
+                                                    text.append("\n>Throttle position.\n");
+                                                    break;
+                                                case 18:
+                                                    text.append("\n>Commanded secondary air status.\n");
+                                                    break;
+                                                case 19:
+                                                    text.append("\n>Oxygen sensors present (in 2 banks).\n");
+                                                    break;
+                                                case 20:
+                                                    text.append("\n>Oxygen Sensor 1\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim.\n");
+                                                    break;
+                                                case 21:
+                                                    text.append("\n>Oxygen Sensor 2\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 22:
+                                                    text.append("\n>Oxygen Sensor 3\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 23:
+                                                    text.append("\n>Oxygen Sensor 4\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 24:
+                                                    text.append("\n>Oxygen Sensor 5\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 25:
+                                                    text.append("\n>Oxygen Sensor 6\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 26:
+                                                    text.append("\n>Oxygen Sensor 7\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 27:
+                                                    text.append("\n>Oxygen Sensor 8\n" +
+                                                                "A: Voltage\n" +
+                                                                "B: Short term fuel trim\n");
+                                                    break;
+                                                case 28:
+                                                    text.append("\n>OBD standards this vehicle conforms to.\n");
+                                                    break;
+                                                case 29:
+                                                    text.append("\n>Oxygen sensors present (in 4 banks).\n");
+                                                    break;
+                                                case 30:
+                                                    text.append("\n>Auxiliary input status.\n");
+                                                    break;
+                                                case 31:
+                                                    text.append("\n>Run time since engine start.\n");
+                                                    break;
+                                                case 32:
+                                                    text.append("\n>Additional subfunctions supported but not shown\n");
+                                                    break;
+                                            }
+                                        }
+                                        j++;
+                                    }
+
                                     Log.e(TAG, Arrays.toString(SupportedPIDs));
+
                                     //Reset command variable
                                     CMD = 0;
                                     break;
@@ -386,10 +510,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         //User feedback
                                         if(CoolantTemp - 40 > 200)
-                                        {
-                                            String Warning ="<font color=#e69b00>Warning, high temperature</font>";
-                                            text.append(Html.fromHtml(Warning));
-                                        }
+                                            text.append("Warning, high temperature\n");
 
                                     }else if(str.startsWith("I"))
                                     {
@@ -405,10 +526,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         //User feedback
                                         if(3*FuelPressure > 600)
-                                        {
-                                            String Warning ="<font color=#e69b00>Warning, high fuel pressure</font>";
-                                            text.append(Html.fromHtml(Warning));
-                                        }
+                                            text.append("Warning, high fuel pressure\n");
 
                                     }else if(str.startsWith("L")) {
                                         //RPM
@@ -448,10 +566,13 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         }
+                        // If it does not contain positive response than that means that:
+                        // 1 - we have a negative response
+                        // 2 - we have a raw response because a command has been sent from the console
                         else
                         {
                             Log.e("ArduinoMSG",arduinoMsg);
-                            text.append(">" + arduinoMsg+"\n");
+                            text.append(">" + arduinoMsg+ "\n");
                         }
                         break;
                 }
@@ -474,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
 
             //Set the textview
             text.setText("GENERAL INFO\n");
-            text.append("Some PIDs may not be implemented!\n");
+            text.append("Some subfunctions may not be implemented!\n");
 
             //Variable to inform that the textview shouldn't be cleared anymore
             PID=true;
@@ -641,6 +762,10 @@ public class MainActivity extends AppCompatActivity {
                 Intent intentConn = new Intent(MainActivity.this, SelectDeviceActivity.class);
                 startActivity(intentConn);
                 break;
+            case R.id.contact:
+                //Access contact page
+                Intent intentCont = new Intent(MainActivity.this, ContactPage.class);
+                startActivity(intentCont);
         }
         return true;
     }
