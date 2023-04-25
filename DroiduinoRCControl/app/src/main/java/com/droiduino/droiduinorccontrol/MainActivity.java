@@ -767,12 +767,14 @@ public class MainActivity extends AppCompatActivity {
                 //Access contact page
                 Intent intentCont = new Intent(MainActivity.this, ContactPage.class);
                 startActivity(intentCont);
+                break;
             case R.id.gmaps:
                 //Access google maps and search for mechanic
                 Uri gmmIntentUri = Uri.parse("geo:0,0?q=mechanic");
                 Intent intentGmaps = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 intentGmaps.setPackage("com.google.android.apps.maps");
                 startActivity(intentGmaps);
+                break;
         }
         return true;
     }
