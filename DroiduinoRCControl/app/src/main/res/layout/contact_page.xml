@@ -14,7 +14,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,97 +30,98 @@
                 android:orientation="vertical" />
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/baseline_email_24"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingTop="20dp"
+                    android:text="@string/email_desc"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingStart="34dp"
+                    android:text="@string/email"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:drawableStart="@drawable/baseline_phone_24"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingTop="20dp"
+                    android:text="@string/phone_desc"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/baseline_email_24"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingTop="20dp"
-                        android:text="@string/email_desc"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingStart="34dp"
+                    android:text="@string/phone_number"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingStart="34dp"
-                        android:text="@string/email"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp"
-                        tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableStart="@drawable/facebook_app_logo"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingTop="20dp"
+                    android:text="@string/fb_desc"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableStart="@drawable/baseline_phone_24"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingTop="20dp"
-                        android:text="@string/phone_desc"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingStart="34dp"
+                    android:text="@string/fb_account"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingStart="34dp"
-                        android:text="@string/phone_number"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp"
-                        tools:ignore="RtlSymmetry" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableStart="@drawable/linkedin"
+                    android:drawablePadding="10dp"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingTop="20dp"
+                    android:text="@string/li_desc"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableStart="@drawable/facebook_app_logo"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingTop="20dp"
-                        android:text="@string/fb_desc"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingStart="34dp"
-                        android:text="@string/fb_account"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp"
-                        tools:ignore="RtlSymmetry"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawableStart="@drawable/linkedin"
-                        android:drawablePadding="10dp"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingTop="20dp"
-                        android:text="@string/li_desc"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/work_sans_medium"
-                        android:paddingStart="34dp"
-                        android:text="@string/li_account"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp"
-                        tools:ignore="RtlSymmetry"/>
-                    </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/work_sans_medium"
+                    android:paddingStart="34dp"
+                    android:text="@string/li_account"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    tools:ignore="RtlSymmetry" />
             </LinearLayout>
-
         </LinearLayout>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

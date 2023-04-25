@@ -4,6 +4,7 @@
     <string name="help">Help</string>
     <string name="connect">Connect</string>
     <string name="contact">Contact</string>
+    <string name="gmaps">Google Maps</string>
     //Commands
     <string name="detect_protocol">Detect Protocol</string>
     <string name="get_supported_pid_s">GET SUPPORTED SUBFUNCTIONS</string>
