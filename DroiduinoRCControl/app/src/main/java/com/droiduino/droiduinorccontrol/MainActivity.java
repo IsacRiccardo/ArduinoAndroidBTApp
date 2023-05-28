@@ -781,7 +781,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Thread to send all the commands supported to get all the information
-     * !Command 0x0100 (Get Supported PIDs) must be executed first
+     * !Command 0x0100 (Get Supported Subfunctions) must be executed first
      */
     public class MyThread extends Thread {
         public void run(){
@@ -806,7 +806,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             //Variable to test if previous Get Supported PIDs command has been executed
-            boolean SupportedPIDComm = false;
+            boolean SupportedPIDFlag = false;
             int index = 2;
             while(index<33)
             {
@@ -814,16 +814,23 @@ public class MainActivity extends AppCompatActivity {
                 if(SupportedPIDs[index] == 1)
                 {
                     //Filter the indexes we send, because not all supported indexes will be implemented in Arduino code
-                    //Current implemented indexes: 4, 5, 10, 12, 17 -> shifted with +10
+                    //Current implemented indexes: 4, 5, 10, 12, 17
                     if(index == 4 || index == 5 || index == 10 || index == 12 || index == 17) {
                         Log.e(TAG, String.valueOf(SupportedPIDs[index]));
-                        SupportedPIDComm = true;
-                        int Shifted_index = index + 10;
-
-                        String Comanda;
-                        Comanda = "ff" + Shifted_index;
-                        Log.e("Commmm", Comanda);
-                        MainActivity.connectedThread.write(Comanda);
+                        SupportedPIDFlag = true;
+                        if(index < 10)
+                        {
+                            String Comanda;
+                            Comanda = "ff0" + index;
+                            Log.e("Commmm", Comanda);
+                            MainActivity.connectedThread.write(Comanda);
+                        }
+                        else {
+                            String Comanda;
+                            Comanda = "ff" + index;
+                            Log.e("Commmm", Comanda);
+                            MainActivity.connectedThread.write(Comanda);
+                        }
 
                         //Put the thread to sleep because Arduino is not that fast
                         try {
@@ -835,7 +842,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 index++;
             }
-            if(!SupportedPIDComm)
+            if(!SupportedPIDFlag)
             {
                 //Let the user know that he must execute the "Get Supported PIDs" command first
                 Toast.makeText(MainActivity.this,"Please execute Get Supported PIDs first",Toast.LENGTH_LONG).show();
@@ -843,13 +850,6 @@ public class MainActivity extends AppCompatActivity {
             //All the commands have been transmitted, reset the PID variable
             //The textview can be cleared when a new request is sent
             PID=false;
-
-            //Put the thread to sleep because Arduino is not that fast
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
             runOnUiThread(new Runnable() {
                 @Override
